@@ -2,7 +2,7 @@
   "name": "Paint Pro — Job Tracker",
   "short_name": "Paint Pro",
   "description": "Residential painting quote, job tracking, and invoicing tool",
-  "start_url": "./paint-quoting-app.html",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0e1117",
   "theme_color": "#6c7fff",
