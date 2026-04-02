@@ -558,7 +558,21 @@
   .tab-bar::-webkit-scrollbar { display: none; }
   .tab-btn { flex-shrink: 0; padding: 12px 14px; font-size: 12px; }
 
+  .inv-editor-grid { display: grid; grid-template-columns: 340px 1fr; gap: 20px; align-items: start; }
+  .inv-editor-panel { display: flex; flex-direction: column; gap: 14px; }
+  .inv-editor-card { background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 14px; }
+  .inv-editor-card h4 { font-size: 13px; font-weight: 700; color: var(--text); margin: 0 0 10px 0; }
+  .inv-item-row { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; }
+  .inv-item-input { flex: 1; padding: 6px 10px; border: 1px solid var(--border); border-radius: 6px; background: var(--surface-3); color: var(--text); font-size: 13px; }
+  .inv-amount-input { width: 90px; padding: 6px 10px; border: 1px solid var(--border); border-radius: 6px; background: var(--surface-3); color: var(--text); font-size: 13px; }
+  .inv-remove-btn { background: none; border: none; color: var(--danger, #f87171); cursor: pointer; font-size: 18px; padding: 2px 4px; line-height: 1; }
+  .inv-empty-hint { font-size: 12px; color: var(--text-3); font-style: italic; padding: 4px 0; }
+  .inv-price-toggle { background: none; border: 1px solid var(--border); border-radius: 5px; color: var(--text-3); cursor: pointer; font-size: 11px; font-weight: 700; padding: 3px 7px; white-space: nowrap; transition: all .15s; flex-shrink: 0; }
+  .inv-price-toggle:hover { border-color: var(--primary); color: var(--primary); }
+  .inv-price-toggle.active { background: rgba(108,127,255,.12); border-color: var(--primary); color: var(--primary); }
+
   @media (max-width: 900px) {
+    .inv-editor-grid { grid-template-columns: 1fr; }
     .calc-grid { grid-template-columns: 1fr; }
     .stats-row { grid-template-columns: 1fr 1fr; }
     .form-row.cols-4, .form-row.cols-5 { grid-template-columns: 1fr 1fr; }
@@ -598,6 +612,15 @@
 <link rel="manifest" href="manifest.json">
 </head>
 <body>
+
+<!-- BACKUP REMINDER BANNER -->
+<div id="backup-banner" style="display:none;background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;padding:10px 16px;font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
+  <span>⚠️ No backup in 7+ days — your data is only in Chrome storage.</span>
+  <div style="display:flex;gap:8px;">
+    <button onclick="exportData();dismissBackupBanner()" style="background:#fff;color:#d97706;border:none;border-radius:6px;padding:5px 12px;font-weight:700;cursor:pointer;font-size:12px;">💾 Back Up Now</button>
+    <button onclick="dismissBackupBanner()" style="background:rgba(255,255,255,0.2);color:#fff;border:1px solid rgba(255,255,255,0.4);border-radius:6px;padding:5px 10px;cursor:pointer;font-size:12px;">Dismiss</button>
+  </div>
+</div>
 
 <!-- HEADER -->
 <div class="app-header">
@@ -1132,8 +1155,9 @@
         <button class="btn btn-outline" onclick="importDataClick()">📥 Import Data</button>
         <input type="file" id="importFile" style="display:none" accept=".json" onchange="importData(event)">
       </div>
-      <div style="margin-top:10px;font-size:12px;color:var(--text-3);">
-        ⚠️ Data is saved in your browser's local storage. Use Export regularly to back up your data.
+      <div style="margin-top:12px;font-size:12px;color:var(--text-3);background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.25);border-radius:8px;padding:10px 12px;line-height:1.6;">
+        💡 <strong style="color:var(--text-2);">About your data:</strong> All info is stored in Chrome's local storage on this device. It survives app restarts and phone reboots — but it will be erased if you clear Chrome's browsing data.<br>
+        <strong style="color:var(--text-2);">Use Export regularly</strong> to save a backup file to your phone's Downloads folder. That file is yours forever — you can restore it any time, back it up to Google Drive, or email it to yourself.
       </div>
     </div>
   </div>
@@ -1347,9 +1371,65 @@
 
 <!-- INVOICE MODAL -->
 <div class="modal-overlay" id="modal-invoice">
-  <div class="modal" style="max-width:800px;">
-    <h2>🧾 Invoice Preview</h2>
-    <div id="invoicePreviewContent"></div>
+  <div class="modal" style="max-width:940px;width:96vw;">
+    <h2>🧾 Invoice Editor</h2>
+    <div class="inv-editor-grid">
+      <!-- LEFT: Editor panel -->
+      <div class="inv-editor-panel">
+        <!-- Invoice details -->
+        <div class="inv-editor-card">
+          <h4>Invoice Details</h4>
+          <div class="form-group"><label>Invoice #</label><input type="text" id="inv_num" class="inv-item-input" style="width:100%;box-sizing:border-box;" oninput="updateInvPreview()"></div>
+          <div class="form-row cols-2">
+            <div class="form-group"><label>Date</label><input type="date" id="inv_date" oninput="updateInvPreview()"></div>
+            <div class="form-group"><label>Terms</label>
+              <select id="inv_terms" onchange="updateInvPreview()">
+                <option>Due on receipt</option><option>Net 7</option><option>Net 15</option><option>Net 30</option>
+                <option>50% upfront, 50% on completion</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <!-- Line items -->
+        <div class="inv-editor-card">
+          <h4>💰 Line Items</h4>
+          <div id="inv_line_items"></div>
+          <button class="btn btn-outline btn-sm" style="margin-top:6px;" onclick="addInvLineItem()">+ Add Line Item</button>
+        </div>
+        <!-- Inclusions -->
+        <div class="inv-editor-card">
+          <h4>✅ Inclusions <span style="font-size:11px;font-weight:400;color:var(--text-3);">(what's covered)</span></h4>
+          <div id="inv_inclusions"></div>
+          <button class="btn btn-outline btn-sm" style="margin-top:6px;" onclick="addInvInclusion()">+ Add Inclusion</button>
+        </div>
+        <!-- Exclusions -->
+        <div class="inv-editor-card">
+          <h4>🚫 Exclusions <span style="font-size:11px;font-weight:400;color:var(--text-3);">(not included)</span></h4>
+          <div id="inv_exclusions"></div>
+          <button class="btn btn-outline btn-sm" style="margin-top:6px;" onclick="addInvExclusion()">+ Add Exclusion</button>
+        </div>
+        <!-- Paint breakdown toggle -->
+        <div class="inv-editor-card">
+          <label style="display:flex;align-items:center;gap:10px;cursor:pointer;">
+            <input type="checkbox" id="inv_show_paint" onchange="updateInvPreview()" style="width:16px;height:16px;flex-shrink:0;">
+            <div>
+              <div style="font-weight:700;font-size:13px;">🎨 Include Paint Breakdown</div>
+              <div style="font-size:11px;color:var(--text-3);margin-top:2px;">Shows paint specs table from the job record</div>
+            </div>
+          </label>
+        </div>
+        <!-- Invoice note -->
+        <div class="inv-editor-card">
+          <h4>📝 Invoice Note</h4>
+          <textarea id="inv_note" rows="2" style="width:100%;box-sizing:border-box;padding:8px 10px;border:1px solid var(--border);border-radius:6px;background:var(--surface-3);color:var(--text);font-size:13px;resize:vertical;" oninput="updateInvPreview()" placeholder="Thank you for your business!"></textarea>
+        </div>
+      </div>
+      <!-- RIGHT: Live preview -->
+      <div>
+        <div style="font-weight:700;font-size:12px;color:var(--text-3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">Live Preview</div>
+        <div id="invPrintArea" class="invoice-preview"></div>
+      </div>
+    </div>
     <div class="modal-footer">
       <button class="btn btn-outline" onclick="closeModal('modal-invoice')">Close</button>
       <button class="btn btn-accent" onclick="printInvoice()">🖨 Print / Save PDF</button>
@@ -1428,6 +1508,7 @@ let DB = {
 
 let priceMode = 'sqft';
 let currentInvoiceJob = null;
+let currentInvData = null;
 let editMode = null; // {type, id}
 
 function loadDB() {
@@ -1841,7 +1922,8 @@ function markComplete(id) {
   DB.inprogress = DB.inprogress.filter(x => x.id !== id);
   saveDB();
   renderInProgress();
-  alert('Job moved to Completed! Generate an invoice from the Completed tab.');
+  const doBackup = confirm('Job moved to Completed!\n\nWould you like to back up your data now? (Saves a file to your Downloads folder)');
+  if (doBackup) exportData();
 }
 
 // ============================================================
@@ -2113,62 +2195,263 @@ function openModal(id) { document.getElementById(id).classList.add('open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); editMode = null; }
 
 // ============================================================
-// INVOICE
+// INVOICE EDITOR
 // ============================================================
+// Normalize incl/excl items: old string arrays become {text, price} objects
+function normInvItems(arr) {
+  return (arr||[]).map(x => (typeof x === 'string') ? {text:x, price:null} : x);
+}
+
 function openInvoice(id) {
   const c = DB.completed.find(x => x.id === id);
   if (!c) return;
   currentInvoiceJob = c;
+  if (!c.invoiceData) {
+    c.invoiceData = {
+      invnum: c.invnum || ('INV-' + (DB.invoiceCounter || 1000)),
+      date: c.date || new Date().toISOString().slice(0,10),
+      terms: DB.settings.terms || 'Due on receipt',
+      lineItems: [{ desc: c.desc || 'Painting Services', amount: parseFloat(c.price) || 0 }],
+      inclusions: [],
+      exclusions: [],
+      showPaintBreakdown: false,
+      customNote: DB.settings.invoicenote || ''
+    };
+  }
+  currentInvData = JSON.parse(JSON.stringify(c.invoiceData));
+  // Migrate old string-only arrays to {text, price} objects
+  currentInvData.inclusions = normInvItems(currentInvData.inclusions);
+  currentInvData.exclusions = normInvItems(currentInvData.exclusions);
+  document.getElementById('inv_num').value = currentInvData.invnum;
+  document.getElementById('inv_date').value = currentInvData.date;
+  document.getElementById('inv_terms').value = currentInvData.terms;
+  document.getElementById('inv_show_paint').checked = currentInvData.showPaintBreakdown;
+  document.getElementById('inv_note').value = currentInvData.customNote;
+  renderInvLineItems();
+  renderInvInclusions();
+  renderInvExclusions();
+  updateInvPreview();
+  openModal('modal-invoice');
+}
+
+function getInvDataFromForm() {
+  if (!currentInvData) return;
+  currentInvData.invnum = document.getElementById('inv_num').value;
+  currentInvData.date = document.getElementById('inv_date').value;
+  currentInvData.terms = document.getElementById('inv_terms').value;
+  currentInvData.showPaintBreakdown = document.getElementById('inv_show_paint').checked;
+  currentInvData.customNote = document.getElementById('inv_note').value;
+}
+
+function renderInvLineItems() {
+  const el = document.getElementById('inv_line_items');
+  if (!el) return;
+  el.innerHTML = currentInvData.lineItems.map((item, i) => `
+    <div class="inv-item-row">
+      <input class="inv-item-input" type="text" value="${esc(item.desc)}" placeholder="Description"
+        oninput="currentInvData.lineItems[${i}].desc=this.value;updateInvPreview()">
+      <input class="inv-amount-input" type="number" value="${item.amount||''}" placeholder="0.00" min="0" step="0.01"
+        oninput="currentInvData.lineItems[${i}].amount=parseFloat(this.value)||0;updateInvPreview()">
+      ${currentInvData.lineItems.length > 1 ? `<button class="inv-remove-btn" onclick="removeInvLineItem(${i})">✕</button>` : ''}
+    </div>`).join('');
+}
+function addInvLineItem() { currentInvData.lineItems.push({desc:'',amount:0}); renderInvLineItems(); updateInvPreview(); }
+function removeInvLineItem(i) { currentInvData.lineItems.splice(i,1); renderInvLineItems(); updateInvPreview(); }
+
+function _invItemRow(arr, i, placeholder, toggleFn, removeFn) {
+  const item = arr[i];
+  const hasP = item.price !== null && item.price !== undefined;
+  return `<div class="inv-item-row" style="flex-wrap:wrap;">
+    <input class="inv-item-input" type="text" value="${esc(item.text||'')}" placeholder="${placeholder}"
+      oninput="${arr===currentInvData.inclusions?'currentInvData.inclusions':'currentInvData.exclusions'}[${i}].text=this.value;updateInvPreview()">
+    <button class="inv-price-toggle${hasP?' active':''}" onclick="${toggleFn}(${i})" title="${hasP?'Remove price':'Attach a price'}">
+      ${hasP?'−$':'+$'}
+    </button>
+    ${hasP?`<input class="inv-amount-input" type="number" value="${item.price||''}" placeholder="0.00" min="0" step="0.01"
+      oninput="${arr===currentInvData.inclusions?'currentInvData.inclusions':'currentInvData.exclusions'}[${i}].price=parseFloat(this.value)||0;updateInvPreview()">`:''}
+    <button class="inv-remove-btn" onclick="${removeFn}(${i})">✕</button>
+  </div>`;
+}
+
+function renderInvInclusions() {
+  const el = document.getElementById('inv_inclusions');
+  if (!el) return;
+  if (!currentInvData.inclusions.length) { el.innerHTML = '<div class="inv-empty-hint">None added yet</div>'; return; }
+  el.innerHTML = currentInvData.inclusions.map((item,i) => {
+    const hasP = item.price !== null && item.price !== undefined;
+    return `<div class="inv-item-row" style="flex-wrap:wrap;">
+      <input class="inv-item-input" type="text" value="${esc(item.text||'')}" placeholder="e.g. Two coats on all walls"
+        oninput="currentInvData.inclusions[${i}].text=this.value;updateInvPreview()">
+      <button class="inv-price-toggle${hasP?' active':''}" onclick="invToggleInclPrice(${i})" title="${hasP?'Remove price':'Add price (+$ to total)'}">
+        ${hasP?'−$':'+$'}
+      </button>
+      ${hasP?`<input class="inv-amount-input" type="number" value="${item.price||''}" placeholder="0.00" min="0" step="0.01"
+        oninput="currentInvData.inclusions[${i}].price=parseFloat(this.value)||0;updateInvPreview()">`:''}
+      <button class="inv-remove-btn" onclick="removeInvInclusion(${i})">✕</button>
+    </div>`;
+  }).join('');
+}
+function invToggleInclPrice(i) {
+  const item = currentInvData.inclusions[i];
+  item.price = (item.price !== null && item.price !== undefined) ? null : 0;
+  renderInvInclusions(); updateInvPreview();
+  if (item.price !== null) { const inp = document.getElementById('inv_inclusions').querySelectorAll('.inv-amount-input'); if(inp.length) inp[inp.length-1].focus(); }
+}
+function addInvInclusion() {
+  currentInvData.inclusions.push({text:'',price:null}); renderInvInclusions(); updateInvPreview();
+  const inp = document.getElementById('inv_inclusions').querySelectorAll('input[type=text]');
+  if(inp.length) inp[inp.length-1].focus();
+}
+function removeInvInclusion(i) { currentInvData.inclusions.splice(i,1); renderInvInclusions(); updateInvPreview(); }
+
+function renderInvExclusions() {
+  const el = document.getElementById('inv_exclusions');
+  if (!el) return;
+  if (!currentInvData.exclusions.length) { el.innerHTML = '<div class="inv-empty-hint">None added yet</div>'; return; }
+  el.innerHTML = currentInvData.exclusions.map((item,i) => {
+    const hasP = item.price !== null && item.price !== undefined;
+    return `<div class="inv-item-row" style="flex-wrap:wrap;">
+      <input class="inv-item-input" type="text" value="${esc(item.text||'')}" placeholder="e.g. Ceiling not included"
+        oninput="currentInvData.exclusions[${i}].text=this.value;updateInvPreview()">
+      <button class="inv-price-toggle${hasP?' active':''}" onclick="invToggleExclPrice(${i})" title="${hasP?'Remove price':'Show add-on price (informational)'}">
+        ${hasP?'−$':'+$'}
+      </button>
+      ${hasP?`<input class="inv-amount-input" type="number" value="${item.price||''}" placeholder="0.00" min="0" step="0.01"
+        oninput="currentInvData.exclusions[${i}].price=parseFloat(this.value)||0;updateInvPreview()">`:''}
+      <button class="inv-remove-btn" onclick="removeInvExclusion(${i})">✕</button>
+    </div>`;
+  }).join('');
+}
+function invToggleExclPrice(i) {
+  const item = currentInvData.exclusions[i];
+  item.price = (item.price !== null && item.price !== undefined) ? null : 0;
+  renderInvExclusions(); updateInvPreview();
+  if (item.price !== null) { const inp = document.getElementById('inv_exclusions').querySelectorAll('.inv-amount-input'); if(inp.length) inp[inp.length-1].focus(); }
+}
+function addInvExclusion() {
+  currentInvData.exclusions.push({text:'',price:null}); renderInvExclusions(); updateInvPreview();
+  const inp = document.getElementById('inv_exclusions').querySelectorAll('input[type=text]');
+  if(inp.length) inp[inp.length-1].focus();
+}
+function removeInvExclusion(i) { currentInvData.exclusions.splice(i,1); renderInvExclusions(); updateInvPreview(); }
+
+function updateInvPreview() {
+  if (!currentInvoiceJob || !currentInvData) return;
+  getInvDataFromForm();
+  const c = currentInvoiceJob;
   const s = DB.settings;
-  const price = parseFloat(c.price) || 0;
-  const mat = parseFloat(c.materials) || 0;
-  const html = `
-    <div class="invoice-preview" id="invPrintArea">
-      <div class="inv-header">
-        <div>
-          <div class="inv-title">${esc(s.bizname || 'Paint Pro')}</div>
-          <div style="margin-top:4px;font-size:13px;color:#555;">
-            ${s.owner ? esc(s.owner) + '<br>' : ''}
-            ${s.phone ? esc(s.phone) + '<br>' : ''}
-            ${s.email ? esc(s.email) + '<br>' : ''}
-            ${s.address ? esc(s.address) + '<br>' : ''}
-            ${s.license ? 'License: ' + esc(s.license) : ''}
-          </div>
-        </div>
-        <div style="text-align:right;">
-          <div style="font-size:22px;font-weight:700;color:#111;">INVOICE</div>
-          <div style="margin-top:8px;font-size:13px;color:#555;">
-            <strong>${esc(c.invnum || 'INV-001')}</strong><br>
-            Date: ${c.date || new Date().toLocaleDateString()}<br>
-            Terms: ${s.terms || 'Due on receipt'}
-          </div>
+  const d = currentInvData;
+
+  // Total: line items + inclusions with prices (add-ons that ARE included)
+  const lineTotal  = d.lineItems.reduce((sum,x) => sum+(parseFloat(x.amount)||0), 0);
+  const inclTotal  = (d.inclusions||[]).reduce((sum,x) => sum+(x.price!==null&&x.price!==undefined?parseFloat(x.price)||0:0), 0);
+  const total = lineTotal + inclTotal;
+
+  // Paint specs
+  let paintHTML = '';
+  if (d.showPaintBreakdown && c.paintSpecs && c.paintSpecs.length) {
+    paintHTML = `<div style="margin-top:18px;">
+      <div style="font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:#555;margin-bottom:8px;">🎨 Paint Specifications</div>
+      <table style="width:100%;border-collapse:collapse;font-size:11px;">
+        <thead><tr style="background:#f3f4f6;">
+          <th style="padding:5px 8px;text-align:left;border:1px solid #e5e7eb;">Area</th>
+          <th style="padding:5px 8px;text-align:left;border:1px solid #e5e7eb;">Brand</th>
+          <th style="padding:5px 8px;text-align:left;border:1px solid #e5e7eb;">Color</th>
+          <th style="padding:5px 8px;text-align:left;border:1px solid #e5e7eb;">Code</th>
+          <th style="padding:5px 8px;text-align:left;border:1px solid #e5e7eb;">Sheen</th>
+        </tr></thead>
+        <tbody>${(c.paintSpecs||[]).map(ps=>`<tr>
+          <td style="padding:5px 8px;border:1px solid #e5e7eb;">${esc(ps.area||'')}</td>
+          <td style="padding:5px 8px;border:1px solid #e5e7eb;">${esc(ps.brand||'')}</td>
+          <td style="padding:5px 8px;border:1px solid #e5e7eb;">${esc(ps.colorName||'')}</td>
+          <td style="padding:5px 8px;border:1px solid #e5e7eb;">${esc(ps.colorCode||'')}</td>
+          <td style="padding:5px 8px;border:1px solid #e5e7eb;">${esc(ps.sheen||'')}</td>
+        </tr>`).join('')}</tbody>
+      </table></div>`;
+  }
+
+  // Inclusions: items listed; those with prices appear as sub-rows in the table
+  const inclItems  = (d.inclusions||[]).filter(x=>(x.text||'').trim());
+  const inclPriced = inclItems.filter(x=>x.price!==null&&x.price!==undefined);
+  const inclPlain  = inclItems.filter(x=>x.price===null||x.price===undefined);
+  // Exclusions: all informational; those with prices show as "Available add-on: +$X"
+  const exclItems  = (d.exclusions||[]).filter(x=>(x.text||'').trim());
+  const exclPriced = exclItems.filter(x=>x.price!==null&&x.price!==undefined);
+  const exclPlain  = exclItems.filter(x=>x.price===null||x.price===undefined);
+
+  // Inclusions table rows (priced ones)
+  const inclTableRows = inclPriced.map(x=>`<tr>
+    <td style="padding:6px 14px 6px 24px;font-size:12px;color:#555;">↳ ${esc(x.text)}</td>
+    <td style="text-align:right;font-weight:600;padding:6px 14px;">$${fmt(x.price)}</td>
+  </tr>`).join('');
+
+  // Inclusions/Exclusions prose section
+  let inclExclHTML = '';
+  if (inclItems.length || exclItems.length) {
+    inclExclHTML = `<div style="margin-top:14px;display:grid;grid-template-columns:${inclItems.length&&exclItems.length?'1fr 1fr':'1fr'};gap:14px;">`;
+    if (inclItems.length) {
+      inclExclHTML += `<div>
+        <div style="font-weight:700;font-size:11px;color:#16a34a;text-transform:uppercase;margin-bottom:5px;">✅ Inclusions</div>
+        ${inclPlain.map(x=>`<div style="font-size:12px;color:#333;padding:2px 0;border-bottom:1px solid #f0f0f0;">• ${esc(x.text)}</div>`).join('')}
+        ${inclPriced.map(x=>`<div style="font-size:12px;color:#333;padding:2px 0;border-bottom:1px solid #f0f0f0;display:flex;justify-content:space-between;"><span>• ${esc(x.text)}</span><span style="font-weight:600;color:#16a34a;">+$${fmt(x.price)}</span></div>`).join('')}
+      </div>`;
+    }
+    if (exclItems.length) {
+      inclExclHTML += `<div>
+        <div style="font-weight:700;font-size:11px;color:#dc2626;text-transform:uppercase;margin-bottom:5px;">🚫 Exclusions</div>
+        ${exclPlain.map(x=>`<div style="font-size:12px;color:#333;padding:2px 0;border-bottom:1px solid #f0f0f0;">• ${esc(x.text)}</div>`).join('')}
+        ${exclPriced.map(x=>`<div style="font-size:12px;color:#333;padding:2px 0;border-bottom:1px solid #f0f0f0;display:flex;justify-content:space-between;"><span>• ${esc(x.text)}</span><span style="color:#888;font-size:11px;">available: +$${fmt(x.price)}</span></div>`).join('')}
+      </div>`;
+    }
+    inclExclHTML += `</div>`;
+  }
+
+  document.getElementById('invPrintArea').innerHTML = `
+    <div class="inv-header">
+      <div>
+        <div class="inv-title">${esc(s.bizname||'Paint Pro')}</div>
+        <div style="margin-top:4px;font-size:13px;color:#555;">
+          ${s.owner?esc(s.owner)+'<br>':''}${s.phone?esc(s.phone)+'<br>':''}
+          ${s.email?esc(s.email)+'<br>':''}${s.address?esc(s.address)+'<br>':''}
+          ${s.license?'License: '+esc(s.license):''}
         </div>
       </div>
-      <div style="margin-bottom:20px;padding:14px;background:#f9fafb;border-radius:6px;">
-        <div style="font-size:11px;font-weight:700;color:#888;text-transform:uppercase;margin-bottom:6px;">Bill To</div>
-        <div style="font-weight:600;font-size:15px;">${esc(c.client)}</div>
-        ${c.address ? '<div style="color:#555;font-size:13px;">' + esc(c.address) + '</div>' : ''}
-        ${c.phone ? '<div style="color:#555;font-size:13px;">' + esc(c.phone) + '</div>' : ''}
-        ${c.email ? '<div style="color:#555;font-size:13px;">' + esc(c.email) + '</div>' : ''}
-      </div>
-      <table class="inv-table">
-        <thead><tr><th>Description</th><th style="text-align:right;">Amount</th></tr></thead>
-        <tbody>
-          <tr><td>${esc(c.desc || 'Painting Services')}</td><td style="text-align:right;font-weight:600;">$${fmt(price)}</td></tr>
-          ${c.notes ? '<tr><td colspan="2" style="font-size:12px;color:#777;font-style:italic;">' + esc(c.notes) + '</td></tr>' : ''}
-        </tbody>
-      </table>
-      <div class="inv-total">Total Due: $${fmt(price)}</div>
-      ${c.payment === 'paid' ? '<div style="text-align:right;margin-top:6px;font-size:13px;color:#16a34a;font-weight:600;">✓ PAID</div>' : ''}
-      ${c.payment === 'partial' ? '<div style="text-align:right;margin-top:6px;font-size:13px;color:#d97706;font-weight:600;">PARTIAL PAYMENT RECEIVED</div>' : ''}
-      <div style="margin-top:28px;padding-top:16px;border-top:1px solid #e5e7eb;font-size:13px;color:#777;">
-        ${s.invoicenote ? '<em>' + esc(s.invoicenote) + '</em>' : ''}
-        ${s.website ? '<br>' + esc(s.website) : ''}
+      <div style="text-align:right;">
+        <div style="font-size:22px;font-weight:700;color:#111;">INVOICE</div>
+        <div style="margin-top:8px;font-size:13px;color:#555;">
+          <strong>${esc(d.invnum)}</strong><br>Date: ${d.date||''}<br>Terms: ${esc(d.terms)}
+        </div>
       </div>
     </div>
-  `;
-  document.getElementById('invoicePreviewContent').innerHTML = html;
-  openModal('modal-invoice');
+    <div style="margin-bottom:16px;padding:12px;background:#f9fafb;border-radius:6px;">
+      <div style="font-size:10px;font-weight:700;color:#888;text-transform:uppercase;margin-bottom:4px;">Bill To</div>
+      <div style="font-weight:600;font-size:14px;">${esc(c.client)}</div>
+      ${c.address?'<div style="color:#555;font-size:12px;">'+esc(c.address)+'</div>':''}
+      ${c.phone?'<div style="color:#555;font-size:12px;">'+esc(c.phone)+'</div>':''}
+      ${c.email?'<div style="color:#555;font-size:12px;">'+esc(c.email)+'</div>':''}
+    </div>
+    <table class="inv-table">
+      <thead><tr><th>Description</th><th style="text-align:right;">Amount</th></tr></thead>
+      <tbody>
+        ${d.lineItems.map(item=>`<tr>
+          <td>${esc(item.desc||'')}</td>
+          <td style="text-align:right;font-weight:600;">$${fmt(item.amount||0)}</td>
+        </tr>`).join('')}
+        ${inclTableRows}
+      </tbody>
+    </table>
+    ${inclExclHTML}
+    ${paintHTML}
+    <div class="inv-total" style="margin-top:12px;">Total Due: $${fmt(total)}</div>
+    ${c.payment==='paid'?'<div style="text-align:right;margin-top:4px;font-size:13px;color:#16a34a;font-weight:600;">✓ PAID</div>':''}
+    ${c.payment==='partial'?'<div style="text-align:right;margin-top:4px;font-size:13px;color:#d97706;font-weight:600;">PARTIAL PAYMENT RECEIVED</div>':''}
+    <div style="margin-top:24px;padding-top:14px;border-top:1px solid #e5e7eb;font-size:12px;color:#777;">
+      ${d.customNote?'<em>'+esc(d.customNote)+'</em>':''}
+      ${s.website?'<br>'+esc(s.website):''}
+    </div>`;
+
+  currentInvoiceJob.invoiceData = JSON.parse(JSON.stringify(currentInvData));
+  saveDB();
 }
 
 function printInvoice() {
@@ -2193,17 +2476,19 @@ function generatePDFInvoice() {
   }
   const { jsPDF } = window.jspdf || jspdf;
   const c = currentInvoiceJob;
+  const d = currentInvData || c.invoiceData || {};
   const s = DB.settings;
   const doc = new jsPDF();
   const blue = [37, 99, 235];
   const gray = [107, 114, 128];
+  const green = [22, 163, 74];
+  const red = [220, 38, 38];
   let y = 20;
 
-  // Header
+  // Business header (left)
   doc.setFontSize(22); doc.setTextColor(...blue);
   doc.text(s.bizname || 'Paint Pro', 14, y);
-  doc.setFontSize(10); doc.setTextColor(...gray);
-  y += 7;
+  doc.setFontSize(10); doc.setTextColor(...gray); y += 7;
   if (s.owner) { doc.text(s.owner, 14, y); y += 5; }
   if (s.phone) { doc.text(s.phone, 14, y); y += 5; }
   if (s.email) { doc.text(s.email, 14, y); y += 5; }
@@ -2214,9 +2499,9 @@ function generatePDFInvoice() {
   doc.setFontSize(20); doc.setTextColor(0,0,0);
   doc.text('INVOICE', 196, 20, { align: 'right' });
   doc.setFontSize(10); doc.setTextColor(...gray);
-  doc.text(c.invnum || 'INV-001', 196, 28, { align: 'right' });
-  doc.text('Date: ' + (c.date || ''), 196, 34, { align: 'right' });
-  doc.text('Terms: ' + (s.terms || 'Due on receipt'), 196, 40, { align: 'right' });
+  doc.text(d.invnum || c.invnum || 'INV-001', 196, 28, { align: 'right' });
+  doc.text('Date: ' + (d.date || c.date || ''), 196, 34, { align: 'right' });
+  doc.text('Terms: ' + (d.terms || s.terms || 'Due on receipt'), 196, 40, { align: 'right' });
 
   y = Math.max(y, 50) + 6;
   doc.setDrawColor(200,200,200); doc.line(14, y, 196, y); y += 8;
@@ -2228,48 +2513,116 @@ function generatePDFInvoice() {
   if (c.address) { doc.text(c.address, 14, y); y += 5; }
   if (c.phone) { doc.text(c.phone, 14, y); y += 5; }
   if (c.email) { doc.text(c.email, 14, y); y += 5; }
+  y += 6;
 
-  y += 8;
-  // Table header
+  // Line items table
   doc.setFillColor(...blue); doc.rect(14, y, 182, 8, 'F');
   doc.setFontSize(10); doc.setTextColor(255,255,255);
   doc.text('Description', 18, y + 5.5);
   doc.text('Amount', 188, y + 5.5, { align: 'right' });
   y += 8;
+  const lineItems = d.lineItems && d.lineItems.length ? d.lineItems : [{ desc: c.desc || 'Painting Services', amount: parseFloat(c.price)||0 }];
+  // Normalize incl/excl to objects (migration safety)
+  const pdfIncl = normInvItems(d.inclusions||[]);
+  const pdfExcl = normInvItems(d.exclusions||[]);
+  const inclPriced = pdfIncl.filter(x=>(x.text||'').trim() && x.price!==null && x.price!==undefined);
+  const inclPlain  = pdfIncl.filter(x=>(x.text||'').trim() && (x.price===null||x.price===undefined));
+  const exclPriced = pdfExcl.filter(x=>(x.text||'').trim() && x.price!==null && x.price!==undefined);
+  const exclPlain  = pdfExcl.filter(x=>(x.text||'').trim() && (x.price===null||x.price===undefined));
+  const inclTotal  = inclPriced.reduce((s,x)=>s+(parseFloat(x.price)||0),0);
 
-  // Table row
   doc.setFontSize(10); doc.setTextColor(0,0,0);
-  const desc = c.desc || 'Painting Services';
-  const descLines = doc.splitTextToSize(desc, 140);
-  doc.text(descLines, 18, y + 6);
-  doc.text('$' + fmt(parseFloat(c.price) || 0), 188, y + 6, { align: 'right' });
-  y += Math.max(descLines.length * 5, 6) + 6;
-  doc.setDrawColor(220,220,220); doc.line(14, y, 196, y); y += 6;
+  // Main line items
+  lineItems.forEach(item => {
+    const lines = doc.splitTextToSize(item.desc || '', 148);
+    doc.text(lines, 18, y + 5.5);
+    doc.text('$' + fmt(item.amount || 0), 188, y + 5.5, { align: 'right' });
+    y += Math.max(lines.length * 5, 5) + 5;
+    doc.setDrawColor(230,230,230); doc.line(14, y, 196, y); y += 3;
+  });
+  // Priced inclusions as indented sub-rows
+  if (inclPriced.length) {
+    doc.setFontSize(9); doc.setTextColor(80,80,80);
+    inclPriced.forEach(x => {
+      doc.text('  ↳ ' + x.text, 18, y + 5);
+      doc.setTextColor(...green); doc.text('$' + fmt(x.price), 188, y + 5, { align: 'right' }); doc.setTextColor(80,80,80);
+      y += 8; doc.setDrawColor(230,230,230); doc.line(14, y, 196, y); y += 2;
+    });
+    doc.setFontSize(10); doc.setTextColor(0,0,0);
+  }
+  y += 3;
 
-  if (c.notes) {
-    doc.setFontSize(9); doc.setTextColor(...gray);
-    const noteLines = doc.splitTextToSize(c.notes, 170);
-    doc.text(noteLines, 18, y); y += noteLines.length * 4 + 8;
+  // Inclusions prose block
+  const hasIncl = inclPlain.length || inclPriced.length;
+  const hasExcl = exclPlain.length || exclPriced.length;
+  if (hasIncl || hasExcl) {
+    y += 4;
+    const leftX = 14, rightX = hasIncl ? 108 : 14;
+    let ly = y, ry = y;
+    if (hasIncl) {
+      doc.setFontSize(8); doc.setTextColor(...green); doc.setFont(undefined,'bold');
+      doc.text('INCLUSIONS', leftX, ly); ly += 5;
+      doc.setFont(undefined,'normal'); doc.setTextColor(50,50,50);
+      [...inclPlain, ...inclPriced].forEach(x => { doc.text('• ' + x.text, leftX+2, ly); ly += 4.5; });
+      ly += 2;
+    }
+    if (hasExcl) {
+      doc.setFontSize(8); doc.setTextColor(...red); doc.setFont(undefined,'bold');
+      doc.text('EXCLUSIONS', rightX, ry); ry += 5;
+      doc.setFont(undefined,'normal'); doc.setTextColor(50,50,50);
+      exclPlain.forEach(x => { doc.text('• ' + x.text, rightX+2, ry); ry += 4.5; });
+      exclPriced.forEach(x => {
+        doc.text('• ' + x.text, rightX+2, ry);
+        doc.setTextColor(120,120,120); doc.text('+$' + fmt(x.price), rightX+2+doc.getTextWidth('• ' + x.text)+2, ry);
+        doc.setTextColor(50,50,50); ry += 4.5;
+      });
+      ry += 2;
+    }
+    y = Math.max(ly, ry);
+    doc.setDrawColor(200,200,200); doc.line(14, y, 196, y); y += 6;
   }
 
-  // Total
+  // Paint specs
+  if (d.showPaintBreakdown && c.paintSpecs && c.paintSpecs.length) {
+    doc.setFontSize(9); doc.setTextColor(...blue); doc.setFont(undefined,'bold');
+    doc.text('PAINT SPECIFICATIONS', 14, y); y += 5;
+    doc.setFont(undefined,'normal');
+    const cols = ['Area','Brand','Color','Code','Sheen'];
+    const colW = [40,35,40,30,37];
+    let cx = 14;
+    doc.setFillColor(243,244,246);
+    doc.rect(14, y, 182, 7, 'F');
+    doc.setTextColor(80,80,80); doc.setFontSize(8);
+    cols.forEach((col,i) => { doc.text(col, cx+1, y+5); cx += colW[i]; });
+    y += 7;
+    doc.setTextColor(0,0,0);
+    c.paintSpecs.forEach(ps => {
+      cx = 14;
+      const row = [ps.area||'', ps.brand||'', ps.colorName||'', ps.colorCode||'', ps.sheen||''];
+      row.forEach((val,i) => { doc.text(String(val).slice(0,colW[i]/2.5|0), cx+1, y+5); cx += colW[i]; });
+      doc.setDrawColor(230,230,230); doc.line(14, y+7, 196, y+7);
+      y += 7;
+    });
+    y += 4;
+  }
+
+  // Total = line items + priced inclusions
+  const total = lineItems.reduce((s,x)=>s+(parseFloat(x.amount)||0),0) + inclTotal;
   doc.setFontSize(13); doc.setTextColor(0,0,0);
-  doc.text('Total Due:', 140, y);
-  doc.setFont(undefined, 'bold');
-  doc.text('$' + fmt(parseFloat(c.price) || 0), 196, y, { align: 'right' });
-  doc.setFont(undefined, 'normal');
-  y += 8;
+  doc.text('Total Due:', 135, y);
+  doc.setFont(undefined,'bold');
+  doc.text('$' + fmt(total), 196, y, { align: 'right' });
+  doc.setFont(undefined,'normal'); y += 7;
+  if (c.payment === 'paid') { doc.setFontSize(11); doc.setTextColor(...green); doc.text('✓ PAID', 196, y, { align: 'right' }); y += 6; }
+  if (c.payment === 'partial') { doc.setFontSize(10); doc.setTextColor(217,119,6); doc.text('PARTIAL PAYMENT RECEIVED', 196, y, { align: 'right' }); y += 6; }
 
-  if (c.payment === 'paid') {
-    doc.setFontSize(11); doc.setTextColor(22, 163, 74);
-    doc.text('✓ PAID', 196, y, { align: 'right' }); y += 6;
-  }
-
-  y += 10; doc.setDrawColor(200,200,200); doc.line(14, y, 196, y); y += 8;
-  if (s.invoicenote) { doc.setFontSize(10); doc.setTextColor(...gray); doc.text(s.invoicenote, 14, y); y += 6; }
+  // Footer note
+  y += 8; doc.setDrawColor(200,200,200); doc.line(14, y, 196, y); y += 7;
+  const note = d.customNote || s.invoicenote || '';
+  if (note) { doc.setFontSize(10); doc.setTextColor(...gray); doc.text(note, 14, y); y += 6; }
   if (s.website) { doc.setFontSize(10); doc.setTextColor(...blue); doc.text(s.website, 14, y); }
 
-  doc.save((c.invnum || 'invoice') + '.pdf');
+  doc.save((d.invnum || c.invnum || 'invoice') + '.pdf');
 }
 
 // ============================================================
@@ -2306,6 +2659,27 @@ function exportData() {
   const a = document.createElement('a');
   a.href = url; a.download = 'paintpro-backup-' + new Date().toISOString().slice(0,10) + '.json';
   a.click(); URL.revokeObjectURL(url);
+  localStorage.setItem('paintpro_last_backup', new Date().toISOString());
+  document.getElementById('backup-banner').style.display = 'none';
+}
+
+function dismissBackupBanner() {
+  document.getElementById('backup-banner').style.display = 'none';
+  localStorage.setItem('paintpro_banner_dismissed', new Date().toISOString());
+}
+
+function checkBackupReminder() {
+  const lastBackup = localStorage.getItem('paintpro_last_backup');
+  const dismissed = localStorage.getItem('paintpro_banner_dismissed');
+  const now = Date.now();
+  const sevenDays = 7 * 24 * 60 * 60 * 1000;
+  // Don't show if dismissed within the last 3 days
+  if (dismissed && (now - new Date(dismissed).getTime()) < 3 * 24 * 60 * 60 * 1000) return;
+  // Show if never backed up and app has data, or if last backup was 7+ days ago
+  const hasData = DB.quotes.length || DB.inprogress.length || DB.completed.length || DB.clients.length;
+  if (hasData && (!lastBackup || (now - new Date(lastBackup).getTime()) > sevenDays)) {
+    document.getElementById('backup-banner').style.display = 'flex';
+  }
 }
 
 function importDataClick() { document.getElementById('importFile').click(); }
@@ -2802,6 +3176,9 @@ addRoomRow({ name: 'Bedroom 1', length: '12', width: '11', height: '9', doors: '
 // Default settings display
 if (!DB.settings.bizname) DB.settings.bizname = 'My Painting Co.';
 updateHeader();
+
+// Check if a backup reminder should be shown
+checkBackupReminder();
 
 // PWA Service Worker Registration
 if ('serviceWorker' in navigator) {

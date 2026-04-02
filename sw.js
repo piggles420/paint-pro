@@ -1,6 +1,6 @@
-const CACHE = 'paintpro-v1';
+const CACHE = 'paintpro-v2';
 const ASSETS = [
-  './paint-quoting-app.html',
+  './index.html',
   './manifest.json',
   'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'
 ];
