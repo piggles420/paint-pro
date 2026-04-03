@@ -256,6 +256,19 @@
   .paint-bar-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--accent));border-radius:99px;transition:width 0.4s;}
   select option{background:#1a1e2e;color:#e8eaf5;}
 
+  /* DATA CARDS (replaces tables on all screens) */
+  .data-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;margin-bottom:10px;transition:border-color 0.2s;}
+  .data-card:active{border-color:var(--border-2);}
+  .data-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px;}
+  .data-card-name{font-size:15px;font-weight:700;color:var(--text);line-height:1.3;}
+  .data-card-price{font-size:17px;font-weight:800;color:var(--primary);flex-shrink:0;}
+  .data-card-meta{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;}
+  .data-card-meta span{font-size:11px;color:var(--text-3);display:flex;align-items:center;gap:3px;}
+  .data-card-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);}
+  .data-card-actions .btn{flex:1;min-width:60px;font-size:12px;padding:8px 10px;}
+  .data-card-sub{font-size:12px;color:var(--text-2);margin-bottom:6px;}
+  .data-card-faded{opacity:0.6;}
+
   /* DESKTOP OVERRIDES */
   @media(min-width:768px){
     body{padding-bottom:0;}
@@ -327,24 +340,22 @@
 <!-- TOP TAB BAR (desktop) -->
 <div class="tab-bar">
   <button class="tab-btn active" onclick="showTab('calculator')" id="tab-calculator">🧮 Calculator</button>
-  <button class="tab-btn" onclick="showTab('quotes')" id="tab-quotes">📋 Active Quotes</button>
-  <button class="tab-btn" onclick="showTab('inprogress')" id="tab-inprogress">🔧 In Progress</button>
-  <button class="tab-btn" onclick="showTab('completed')" id="tab-completed">✅ Completed</button>
+  <button class="tab-btn" onclick="showTab('quotes')" id="tab-quotes">📋 Quotes</button>
+  <button class="tab-btn" onclick="showTab('schedule')" id="tab-schedule">📅 Schedule</button>
   <button class="tab-btn" onclick="showTab('expenses')" id="tab-expenses">💰 Expenses</button>
   <button class="tab-btn" onclick="showTab('clients')" id="tab-clients">👥 Clients</button>
-  <button class="tab-btn" onclick="showTab('schedule')" id="tab-schedule">📅 Schedule</button>
+  <button class="tab-btn" onclick="showTab('metrics')" id="tab-metrics">📊 Metrics</button>
   <button class="tab-btn" onclick="showTab('settings')" id="tab-settings">⚙️ Settings</button>
 </div>
 
 <!-- BOTTOM NAV (mobile) -->
 <nav class="bottom-nav">
-  <button class="bnav-btn active" onclick="showTab('calculator')" id="bnav-calculator"><span class="bnav-icon">🧮</span><span class="bnav-label">Quote</span></button>
+  <button class="bnav-btn active" onclick="showTab('calculator')" id="bnav-calculator"><span class="bnav-icon">🧮</span><span class="bnav-label">Calc</span></button>
   <button class="bnav-btn" onclick="showTab('quotes')" id="bnav-quotes"><span class="bnav-icon">📋</span><span class="bnav-label">Quotes</span></button>
-  <button class="bnav-btn" onclick="showTab('inprogress')" id="bnav-inprogress"><span class="bnav-icon">🔧</span><span class="bnav-label">Jobs</span></button>
-  <button class="bnav-btn" onclick="showTab('completed')" id="bnav-completed"><span class="bnav-icon">✅</span><span class="bnav-label">Done</span></button>
   <button class="bnav-btn" onclick="showTab('schedule')" id="bnav-schedule"><span class="bnav-icon">📅</span><span class="bnav-label">Schedule</span></button>
   <button class="bnav-btn" onclick="showTab('expenses')" id="bnav-expenses"><span class="bnav-icon">💰</span><span class="bnav-label">Expenses</span></button>
   <button class="bnav-btn" onclick="showTab('clients')" id="bnav-clients"><span class="bnav-icon">👥</span><span class="bnav-label">Clients</span></button>
+  <button class="bnav-btn" onclick="showTab('metrics')" id="bnav-metrics"><span class="bnav-icon">📊</span><span class="bnav-label">Metrics</span></button>
   <button class="bnav-btn" onclick="showTab('settings')" id="bnav-settings"><span class="bnav-icon">⚙️</span><span class="bnav-label">Settings</span></button>
 </nav>
 
@@ -451,6 +462,18 @@
                 <option value="premium">Premium</option>
               </select>
             </div>
+            <div style="height:1px;background:var(--border);margin:14px 0;"></div>
+            <h4 style="font-size:11px;font-weight:800;color:var(--text-3);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:10px;">🚪 Doors & 🪟 Windows Add-ons</h4>
+            <div class="price-tier-row">
+              <label>Per Door (paint both sides + trim)</label>
+              <span>$</span><input type="number" id="doorPrice" value="125" step="5" min="0" oninput="recalc()" onchange="recalc()">
+              <span style="font-size:12px;color:var(--text-3);">/door</span>
+            </div>
+            <div class="price-tier-row">
+              <label>Per Window (cut-in, sills & casing)</label>
+              <span>$</span><input type="number" id="windowPrice" value="75" step="5" min="0" oninput="recalc()" onchange="recalc()">
+              <span style="font-size:12px;color:var(--text-3);">/window</span>
+            </div>
           </div>
 
           <!-- PER ROOM PANEL -->
@@ -470,6 +493,15 @@
               <div class="room-price-row"><span>Office / Study</span><input type="number" id="rp_off_lo" value="200" oninput="recalc()" onchange="recalc()"><input type="number" id="rp_off_hi" value="450" onchange="recalc()"></div>
               <div class="room-price-row"><span>Garage / Utility</span><input type="number" id="rp_gar_lo" value="300" oninput="recalc()" onchange="recalc()"><input type="number" id="rp_gar_hi" value="700" onchange="recalc()"></div>
               <div class="room-price-row"><span>Exterior Wall</span><input type="number" id="rp_ext_lo" value="500" oninput="recalc()" onchange="recalc()"><input type="number" id="rp_ext_hi" value="1200" onchange="recalc()"></div>
+            </div>
+            <div style="height:1px;background:var(--border);margin:14px 0;"></div>
+            <div class="price-tier-row">
+              <label>Per Door add-on</label>
+              <span>$</span><input type="number" id="doorPriceRoom" value="125" step="5" min="0" oninput="recalc()" onchange="recalc()">
+            </div>
+            <div class="price-tier-row">
+              <label>Per Window add-on</label>
+              <span>$</span><input type="number" id="windowPriceRoom" value="75" step="5" min="0" oninput="recalc()" onchange="recalc()">
             </div>
           </div>
         </div>
@@ -495,6 +527,8 @@
           <div class="result-line"><span class="label">🔵 Standard Quote</span><span class="value" id="res-standard">—</span></div>
           <div class="result-line"><span class="label">🟣 Premium Quote</span><span class="value" id="res-premium">—</span></div>
         </div>
+        <div class="result-line" id="dw-addon-row" style="display:none;"><span class="label">🚪 Doors Add-on</span><span class="value" id="res-dooraddon">—</span></div>
+        <div class="result-line" id="dw-window-row" style="display:none;"><span class="label">🪟 Windows Add-on</span><span class="value" id="res-windowaddon">—</span></div>
 
         <div id="roomPriceResult" style="display:none;">
           <div class="result-line"><span class="label">Room-Based (Low)</span><span class="value" id="res-roomlo">—</span></div>
@@ -635,31 +669,7 @@
     <button class="btn btn-primary" onclick="openAddModal('quote')">+ New Quote</button>
     <span class="text-sm">Track all active quotes and their status</span>
   </div>
-  <div class="card">
-    <div class="card-body" style="padding:0;">
-      <div class="table-wrap">
-        <table id="quotesTable">
-          <thead>
-            <tr>
-              <th>Client</th>
-              <th>Address</th>
-              <th>Phone</th>
-              <th>Job Type</th>
-              <th>Areas / Rooms</th>
-              <th>Quoted $</th>
-              <th>Date</th>
-              <th>Expires</th>
-              <th>Proposed Start</th>
-              <th>Status</th>
-              <th>Notes</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody id="quotesTbody"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
+  <div id="quotesList"></div>
 </div>
 
 <!-- ============================================================ -->
@@ -739,27 +749,7 @@
     <button class="btn btn-primary" onclick="openAddModal('expense')">+ Log Expense</button>
     <span class="text-sm">Track paint, supplies, and other job costs</span>
   </div>
-  <div class="card">
-    <div class="card-body" style="padding:0;">
-      <div class="table-wrap">
-        <table id="expensesTable">
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Job / Client</th>
-              <th>Category</th>
-              <th>Item / Description</th>
-              <th>Amount</th>
-              <th>Receipt #</th>
-              <th>Notes</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody id="expensesTbody"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
+  <div id="expensesList"></div>
 </div>
 
 <!-- ============================================================ -->
@@ -770,27 +760,7 @@
     <button class="btn btn-primary" onclick="openAddModal('client')">+ New Client</button>
     <span class="text-sm">Client database — contact info, job history &amp; paint specs</span>
   </div>
-  <div class="card">
-    <div class="card-body" style="padding:0;">
-      <div class="table-wrap">
-        <table id="clientsTable">
-          <thead>
-            <tr>
-              <th>Client</th>
-              <th>Phone</th>
-              <th>Email</th>
-              <th>Address</th>
-              <th>Paint Specs</th>
-              <th>Jobs</th>
-              <th>Notes</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody id="clientsTbody"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
+  <div id="clientsList"></div>
 </div>
 
 <!-- ============================================================ -->
@@ -816,6 +786,14 @@
       <div class="cal-legend-item" style="color:var(--text-3);font-size:11px;">💡 Drag events to reschedule • Click to manage</div>
     </div>
   </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- TAB: METRICS -->
+<!-- ============================================================ -->
+<div class="tab-content" id="tab-content-metrics">
+  <div class="stats-row" id="metricsStats"></div>
+  <div style="display:grid;grid-template-columns:1fr;gap:16px;" id="metricsBody"></div>
 </div>
 
 <!-- ============================================================ -->
@@ -1233,6 +1211,14 @@ function loadDB() {
       DB = { ...DB, ...parsed };
     }
   } catch(e) {}
+  // Ensure all arrays exist
+  if (!DB.quotes)     DB.quotes     = [];
+  if (!DB.inprogress) DB.inprogress = [];
+  if (!DB.completed)  DB.completed  = [];
+  if (!DB.expenses)   DB.expenses   = [];
+  if (!DB.clients)    DB.clients    = [];
+  if (!DB.settings)   DB.settings   = {};
+  if (!DB.invoiceCounter) DB.invoiceCounter = 1000;
 }
 
 function saveDB() {
@@ -1246,17 +1232,18 @@ function showTab(name) {
   document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
   document.querySelectorAll('.bnav-btn').forEach(el => el.classList.remove('active'));
-  document.getElementById('tab-content-' + name).classList.add('active');
-  document.getElementById('tab-' + name).classList.add('active');
+  const tc = document.getElementById('tab-content-' + name);
+  if (tc) tc.classList.add('active');
+  const tb = document.getElementById('tab-' + name);
+  if (tb) tb.classList.add('active');
   const bnav = document.getElementById('bnav-' + name);
   if (bnav) bnav.classList.add('active');
-  if (name === 'quotes')     renderQuotes();
-  if (name === 'inprogress') renderInProgress();
-  if (name === 'completed')  renderCompleted();
-  if (name === 'expenses')   renderExpenses();
-  if (name === 'clients')    renderClients();
-  if (name === 'schedule')   renderCalendar();
-  if (name === 'settings')   loadSettings();
+  if (name === 'quotes')   renderQuotes();
+  if (name === 'schedule') renderCalendar();
+  if (name === 'expenses') renderExpenses();
+  if (name === 'clients')  renderClients();
+  if (name === 'metrics')  renderMetrics();
+  if (name === 'settings') loadSettings();
 }
 
 // ============================================================
@@ -1369,6 +1356,20 @@ function recalc() {
     }
   });
 
+  // Door & window add-ons
+  let totalDoors = 0, totalWindows = 0;
+  roomRows.forEach(r => {
+    totalDoors   += parseInt(r.doors)   || 0;
+    totalWindows += parseInt(r.windows) || 0;
+  });
+  const doorPriceEl   = document.getElementById('doorPrice')   || document.getElementById('doorPriceRoom');
+  const windowPriceEl = document.getElementById('windowPrice') || document.getElementById('windowPriceRoom');
+  const doorUnitPrice   = parseFloat(doorPriceEl?.value)   || 0;
+  const windowUnitPrice = parseFloat(windowPriceEl?.value) || 0;
+  const doorAddon   = totalDoors   * doorUnitPrice;
+  const windowAddon = totalWindows * windowUnitPrice;
+  const dwAddon = doorAddon + windowAddon;
+
   const coverage = parseFloat(document.getElementById('coverage').value) || 400;
   const includeCeiling = document.getElementById('includeCeiling').value === 'yes';
   const includePrimer = document.getElementById('includePrimer').value === 'yes';
@@ -1399,7 +1400,8 @@ function recalc() {
 
   const tier = document.getElementById('selectedTier').value;
   let selectedPrice = tier === 'basic' ? basicPrice : tier === 'premium' ? premiumPrice : standardPrice;
-  if (priceMode === 'room') selectedPrice = (roomBasedLo + roomBasedHi) / 2;
+  selectedPrice += dwAddon;
+  if (priceMode === 'room') { selectedPrice = (roomBasedLo + roomBasedHi) / 2 + dwAddon; }
   // When mode is 'both', still use the sq-ft tier price as the selected (more precise)
   // both mode just shows both options but the selected one is the tier-based price
 
@@ -1418,6 +1420,11 @@ function recalc() {
   setText('res-roomlo', roomBasedLo > 0 ? '$' + fmt(roomBasedLo) : '—');
   setText('res-roomhi', roomBasedHi > 0 ? '$' + fmt(roomBasedHi) : '—');
   setText('res-selected', selectedPrice > 0 ? '$' + fmt(selectedPrice) : '—');
+
+  if (doorAddon > 0) { setText('res-dooraddon', '+ $'+fmt(doorAddon)+' ('+totalDoors+'×$'+fmt(doorUnitPrice)+')'); document.getElementById('dw-addon-row').style.display=''; }
+  else document.getElementById('dw-addon-row').style.display='none';
+  if (windowAddon > 0) { setText('res-windowaddon', '+ $'+fmt(windowAddon)+' ('+totalWindows+'×$'+fmt(windowUnitPrice)+')'); document.getElementById('dw-window-row').style.display=''; }
+  else document.getElementById('dw-window-row').style.display='none';
 
   // Shopping list
   updateShoppingList(wallGallons, ceilGallons, primerGallons, totalGallons);
@@ -1483,7 +1490,13 @@ function saveAsQuote() {
     totalWall += 2*(L+W)*H;
   });
   const rates = { basic, standard, premium };
-  const price = Math.round(totalWall * rates[tier]);
+  let price = Math.round(totalWall * rates[tier]);
+  const doorUnitP   = parseFloat(document.getElementById('doorPrice')?.value)   || 0;
+  const windowUnitP = parseFloat(document.getElementById('windowPrice')?.value) || 0;
+  let totalDoors2=0, totalWindows2=0;
+  roomRows.forEach(r=>{ totalDoors2+=parseInt(r.doors)||0; totalWindows2+=parseInt(r.windows)||0; });
+  const dwAddon2 = totalDoors2*doorUnitP + totalWindows2*windowUnitP;
+  price += dwAddon2;
   const areas = roomRows.map(r => r.name||'Room').filter(Boolean).join(', ') || document.getElementById('calcNotes').value;
   const address = (document.getElementById('calcAddress')||{value:''}).value.trim();
   const phone   = (document.getElementById('calcPhone')||{value:''}).value.trim();
@@ -1496,7 +1509,10 @@ function saveAsQuote() {
     date: new Date().toISOString().slice(0,10),
     status: 'pending',
     notes: document.getElementById('calcNotes').value,
-    roomSnapshot: JSON.parse(JSON.stringify(roomRows))
+    roomSnapshot: JSON.parse(JSON.stringify(roomRows)),
+    doorCount: totalDoors2, windowCount: totalWindows2,
+    doorUnitPrice: doorUnitP, windowUnitPrice: windowUnitP,
+    dwAddon: dwAddon2
   };
   DB.quotes.push(quoteObj);
   autoUpsertClient({ name: client, phone, email, address, notes: quoteObj.notes });
@@ -1521,62 +1537,61 @@ function clearCalculator() {
 // QUOTES
 // ============================================================
 function renderQuotes() {
-  const tbody = document.getElementById('quotesTbody');
-  const data = DB.quotes;
-
-  // Stats
+  const data = DB.quotes || [];
   const total = data.length;
-  const accepted = data.filter(q => q.status === 'accepted').length;
-  const pending = data.filter(q => q.status === 'pending').length;
-  const totalValue = data.filter(q => q.status !== 'declined').reduce((s, q) => s + (parseFloat(q.price) || 0), 0);
+  const accepted = data.filter(q=>q.status==='accepted').length;
+  const pending  = data.filter(q=>q.status==='pending').length;
+  const totalValue = data.filter(q=>q.status!=='declined').reduce((s,q)=>s+(parseFloat(q.price)||0),0);
   document.getElementById('quoteStats').innerHTML = `
     <div class="stat-card"><div class="stat-label">Total Quotes</div><div class="stat-value">${total}</div></div>
     <div class="stat-card"><div class="stat-label">Pending</div><div class="stat-value">${pending}</div><div class="stat-sub">Awaiting response</div></div>
     <div class="stat-card"><div class="stat-label">Accepted</div><div class="stat-value">${accepted}</div></div>
-    <div class="stat-card"><div class="stat-label">Pipeline Value</div><div class="stat-value">$${fmt(totalValue)}</div><div class="stat-sub">Active + accepted</div></div>
+    <div class="stat-card"><div class="stat-label">Pipeline Value</div><div class="stat-value">$${fmt(totalValue)}</div></div>
   `;
-
+  const container = document.getElementById('quotesList');
+  if (!container) return;
   if (data.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="10"><div class="empty-state"><div class="icon">📋</div><div>No quotes yet. Use the Calculator tab to generate one or click "+ New Quote".</div></div></td></tr>';
+    container.innerHTML = '<div class="empty-state"><div class="icon">📋</div><div>No quotes yet. Use the Calculator to generate one.</div></div>';
     return;
   }
   const today = new Date().toISOString().slice(0,10);
-  tbody.innerHTML = data.map(q => {
-    const expired = q.expires && q.expires < today && q.status === 'pending';
-    const expiresSoon = q.expires && q.expires >= today && q.expires <= addDays(today,7) && q.status === 'pending';
-    const expiresDisplay = !q.expires ? '—' :
-      expired ? `<span style="color:var(--danger);font-weight:700;">⚠ ${q.expires}</span>` :
-      expiresSoon ? `<span style="color:var(--warning);font-weight:700;">⏰ ${q.expires}</span>` :
-      q.expires;
-    return `
-    <tr style="${expired ? 'opacity:0.65;' : ''}">
-      <td><strong>${esc(q.client)}</strong></td>
-      <td>${esc(q.address || '—')}</td>
-      <td>${esc(q.phone || '—')}</td>
-      <td>${esc(q.type || '—')}</td>
-      <td>${esc(q.areas || '—')}</td>
-      <td><strong>$${fmt(parseFloat(q.price)||0)}</strong></td>
-      <td>${q.date || '—'}</td>
-      <td>${expiresDisplay}</td>
-      <td>${q.start || '—'}</td>
-      <td><span class="badge badge-${q.status}">${cap(q.status)}</span></td>
-      <td style="max-width:160px;white-space:normal;font-size:12px;color:var(--text-3);">${esc(q.notes || '—')}</td>
-      <td>
-        <div class="td-actions">
-          <button class="btn btn-outline btn-sm" onclick="editEntry('quote',${q.id})">✏️</button>
-          <button class="btn btn-sm" style="background:var(--purple-dim);color:var(--purple);border:1px solid rgba(167,139,250,0.2);" onclick="openEstimate(${q.id})">📄 Bid</button>
-          <button class="btn btn-sm" style="background:var(--accent-dim);color:var(--accent);border:1px solid rgba(56,189,248,0.2);" onclick="moveToInProgress(${q.id})">→ WIP</button>
-          <button class="btn btn-danger btn-sm" onclick="deleteEntry('quote',${q.id})">🗑</button>
+  container.innerHTML = data.map(q => {
+    const expired    = q.expires && q.expires < today && q.status==='pending';
+    const expiresSoon= q.expires && q.expires>=today && q.expires<=addDays(today,7) && q.status==='pending';
+    const expLabel   = !q.expires ? '' : expired ? `<span style="color:var(--danger);">⚠ Exp ${q.expires}</span>` : expiresSoon ? `<span style="color:var(--warning);">⏰ Exp ${q.expires}</span>` : `<span>Exp ${q.expires}</span>`;
+    return `<div class="data-card${expired?' data-card-faded':''}">
+      <div class="data-card-top">
+        <div>
+          <div class="data-card-name">${esc(q.client)}</div>
+          <div class="data-card-sub">${esc(q.type||'Interior')}${q.areas?' · '+esc(q.areas):''}</div>
         </div>
-      </td>
-    </tr>
-  `}).join('');
+        <div style="text-align:right;">
+          <div class="data-card-price">$${fmt(parseFloat(q.price)||0)}</div>
+          <span class="badge badge-${q.status}">${cap(q.status)}</span>
+        </div>
+      </div>
+      <div class="data-card-meta">
+        ${q.date?`<span>📅 ${q.date}</span>`:''}
+        ${q.start?`<span>🗓 Start ${q.start}</span>`:''}
+        ${expLabel}
+        ${q.address?`<span>📍 ${esc(q.address)}</span>`:''}
+        ${q.phone?`<span>📞 ${esc(q.phone)}</span>`:''}
+      </div>
+      ${q.notes?`<div style="font-size:11px;color:var(--text-3);margin-bottom:6px;padding:6px 8px;background:var(--surface-2);border-radius:8px;">${esc(q.notes)}</div>`:''}
+      <div class="data-card-actions">
+        <button class="btn btn-sm" style="background:var(--purple-dim);color:var(--purple);border:1px solid rgba(167,139,250,0.2);" onclick="openEstimate(${q.id})">📄 Bid</button>
+        <button class="btn btn-accent btn-sm" onclick="moveToInProgress(${q.id})">→ Schedule</button>
+        <button class="btn btn-outline btn-sm" onclick="editEntry('quote',${q.id})">✏️ Edit</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteEntry('quote',${q.id})">🗑</button>
+      </div>
+    </div>`;
+  }).join('');
 }
 
 function moveToInProgress(id) {
   const q = DB.quotes.find(x => x.id === id);
   if (!q) return;
-  if (!confirm(`Move "${q.client}" to In Progress?`)) return;
+  if (!confirm(`Accept this quote and add "${q.client}" to schedule?`)) return;
   DB.inprogress.push({
     id: Date.now(),
     client: q.client, phone: q.phone, email: q.email, address: q.address,
@@ -1584,11 +1599,15 @@ function moveToInProgress(id) {
     start: q.start || new Date().toISOString().slice(0,10),
     end: '',
     price: q.price,
-    notes: q.notes
+    notes: q.notes,
+    doorCount: q.doorCount, windowCount: q.windowCount,
+    doorUnitPrice: q.doorUnitPrice, windowUnitPrice: q.windowUnitPrice,
+    dwAddon: q.dwAddon
   });
   DB.quotes = DB.quotes.filter(x => x.id !== id);
   saveDB();
   renderQuotes();
+  showTab('schedule');
 }
 
 // ============================================================
@@ -1642,11 +1661,14 @@ function markComplete(id) {
     materials: '',
     payment: 'unpaid',
     invnum: 'INV-' + DB.invoiceCounter,
-    notes: j.notes
+    notes: j.notes,
+    doorCount: j.doorCount, windowCount: j.windowCount,
+    doorUnitPrice: j.doorUnitPrice, windowUnitPrice: j.windowUnitPrice,
+    dwAddon: j.dwAddon
   });
   DB.inprogress = DB.inprogress.filter(x => x.id !== id);
   saveDB();
-  renderInProgress();
+  showTab('schedule');
   const doBackup = confirm('Job moved to Completed!\n\nWould you like to back up your data now? (Saves a file to your Downloads folder)');
   if (doBackup) exportData();
 }
@@ -1718,40 +1740,46 @@ function updatePayment(id, val) {
 // EXPENSES
 // ============================================================
 function renderExpenses() {
-  const tbody = document.getElementById('expensesTbody');
-  const data = DB.expenses;
-  const total = data.reduce((s, e) => s + (parseFloat(e.amount) || 0), 0);
+  const data = DB.expenses || [];
+  const total = data.reduce((s,e)=>s+(parseFloat(e.amount)||0),0);
   const bycat = {};
-  data.forEach(e => { bycat[e.cat] = (bycat[e.cat] || 0) + (parseFloat(e.amount) || 0); });
-  const topCat = Object.entries(bycat).sort((a,b) => b[1]-a[1])[0];
+  data.forEach(e=>{bycat[e.cat]=(bycat[e.cat]||0)+(parseFloat(e.amount)||0);});
+  const topCat = Object.entries(bycat).sort((a,b)=>b[1]-a[1])[0];
   document.getElementById('expenseStats').innerHTML = `
     <div class="stat-card"><div class="stat-label">Total Expenses</div><div class="stat-value">$${fmt(total)}</div></div>
     <div class="stat-card"><div class="stat-label">Expense Count</div><div class="stat-value">${data.length}</div></div>
-    <div class="stat-card"><div class="stat-label">Top Category</div><div class="stat-value" style="font-size:16px;">${topCat ? topCat[0] : '—'}</div><div class="stat-sub">${topCat ? '$' + fmt(topCat[1]) : ''}</div></div>
-    <div class="stat-card"><div class="stat-label">YTD Deductions</div><div class="stat-value">$${fmt(total)}</div><div class="stat-sub">Track for taxes</div></div>
+    <div class="stat-card"><div class="stat-label">Top Category</div><div class="stat-value" style="font-size:16px;">${topCat?topCat[0]:'—'}</div><div class="stat-sub">${topCat?'$'+fmt(topCat[1]):''}</div></div>
+    <div class="stat-card"><div class="stat-label">YTD Deductions</div><div class="stat-value">$${fmt(total)}</div><div class="stat-sub">Tax write-offs</div></div>
   `;
+  const container = document.getElementById('expensesList');
+  if (!container) return;
   if (data.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="8"><div class="empty-state"><div class="icon">💰</div><div>No expenses logged yet.</div></div></td></tr>';
+    container.innerHTML = '<div class="empty-state"><div class="icon">💰</div><div>No expenses logged yet.</div></div>';
     return;
   }
-  const sorted = [...data].sort((a,b) => (b.date || '').localeCompare(a.date || ''));
-  tbody.innerHTML = sorted.map(e => `
-    <tr>
-      <td>${e.date || '—'}</td>
-      <td>${esc(e.job || '—')}</td>
-      <td><span class="tag" style="background:var(--accent-dim);color:var(--accent);border:1px solid rgba(56,189,248,0.2);">${esc(e.cat)}</span></td>
-      <td>${esc(e.desc || '—')}</td>
-      <td><strong>$${fmt(parseFloat(e.amount)||0)}</strong></td>
-      <td style="font-size:12px;color:var(--text-3);">${esc(e.receipt || '—')}</td>
-      <td style="font-size:12px;color:var(--text-3);">${esc(e.notes || '—')}</td>
-      <td>
-        <div class="td-actions">
-          <button class="btn btn-outline btn-sm" onclick="editEntry('expense',${e.id})">✏️</button>
-          <button class="btn btn-danger btn-sm" onclick="deleteEntry('expense',${e.id})">🗑</button>
+  const sorted = [...data].sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  container.innerHTML = sorted.map(e => `
+    <div class="data-card">
+      <div class="data-card-top">
+        <div>
+          <div class="data-card-name">${esc(e.desc||e.cat)}</div>
+          <div class="data-card-sub">${esc(e.job||'—')}</div>
         </div>
-      </td>
-    </tr>
-  `).join('');
+        <div style="text-align:right;">
+          <div class="data-card-price" style="color:var(--warning);">$${fmt(parseFloat(e.amount)||0)}</div>
+          <span class="tag" style="background:var(--accent-dim);color:var(--accent);border:1px solid rgba(56,189,248,0.2);font-size:10px;">${esc(e.cat)}</span>
+        </div>
+      </div>
+      <div class="data-card-meta">
+        ${e.date?`<span>📅 ${e.date}</span>`:''}
+        ${e.receipt?`<span>🧾 ${esc(e.receipt)}</span>`:''}
+        ${e.notes?`<span>📝 ${esc(e.notes)}</span>`:''}
+      </div>
+      <div class="data-card-actions">
+        <button class="btn btn-outline btn-sm" onclick="editEntry('expense',${e.id})">✏️ Edit</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteEntry('expense',${e.id})">🗑 Delete</button>
+      </div>
+    </div>`).join('');
 }
 
 // ============================================================
@@ -2262,6 +2290,10 @@ function generatePDFInvoice() {
   const red = [220, 38, 38];
   let y = 20;
 
+  // Accent bar at top
+  doc.setFillColor(...blue);
+  doc.rect(0, 0, 210, 5, 'F');
+
   // Business header (left)
   doc.setFontSize(22); doc.setTextColor(...blue);
   doc.text(s.bizname || 'Paint Pro', 14, y);
@@ -2317,6 +2349,22 @@ function generatePDFInvoice() {
     y += Math.max(lines.length * 5, 5) + 5;
     doc.setDrawColor(230,230,230); doc.line(14, y, 196, y); y += 3;
   });
+  // Auto door/window add-on line items
+  const job = c;
+  if ((job.doorCount||0) > 0 || (job.windowCount||0) > 0) {
+    doc.setFontSize(9); doc.setTextColor(80,80,80);
+    if ((job.doorCount||0) > 0 && (job.doorUnitPrice||0) > 0) {
+      doc.text('  🚪 Doors (' + job.doorCount + ' × $' + fmt(job.doorUnitPrice) + ')', 18, y + 5);
+      doc.setTextColor(...green); doc.text('$' + fmt(job.doorCount*job.doorUnitPrice), 188, y + 5, { align: 'right' }); doc.setTextColor(80,80,80);
+      y += 8; doc.setDrawColor(230,230,230); doc.line(14, y, 196, y); y += 2;
+    }
+    if ((job.windowCount||0) > 0 && (job.windowUnitPrice||0) > 0) {
+      doc.text('  🪟 Windows (' + job.windowCount + ' × $' + fmt(job.windowUnitPrice) + ')', 18, y + 5);
+      doc.setTextColor(...green); doc.text('$' + fmt(job.windowCount*job.windowUnitPrice), 188, y + 5, { align: 'right' }); doc.setTextColor(80,80,80);
+      y += 8; doc.setDrawColor(230,230,230); doc.line(14, y, 196, y); y += 2;
+    }
+    doc.setFontSize(10); doc.setTextColor(0,0,0);
+  }
   // Priced inclusions as indented sub-rows
   if (inclPriced.length) {
     doc.setFontSize(9); doc.setTextColor(80,80,80);
@@ -2384,7 +2432,7 @@ function generatePDFInvoice() {
   }
 
   // Total = line items + priced inclusions
-  const total = lineItems.reduce((s,x)=>s+(parseFloat(x.amount)||0),0) + inclTotal;
+  const total = lineItems.reduce((s,x)=>s+(parseFloat(x.amount)||0),0) + inclTotal + (c.dwAddon||0);
   doc.setFontSize(13); doc.setTextColor(0,0,0);
   doc.text('Total Due:', 135, y);
   doc.setFont(undefined,'bold');
@@ -2644,44 +2692,46 @@ function renderCLSpecRows() {
 // CLIENTS
 // ============================================================
 function renderClients() {
-  const tbody = document.getElementById('clientsTbody');
-  if (!tbody) return;
+  const container = document.getElementById('clientsList');
+  if (!container) return;
   if (!DB.clients || DB.clients.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="8"><div class="empty-state"><div class="icon">👥</div><div>No clients yet. Add one to start building your database.</div></div></td></tr>';
+    container.innerHTML = '<div class="empty-state"><div class="icon">👥</div><div>No clients yet. They auto-add when you save quotes.</div></div>';
     return;
   }
-  tbody.innerHTML = DB.clients.map(c => {
-    const specs = (c.paintSpecs || []);
-    const specHTML = specs.length
-      ? specs.map(s => `<span class="client-spec-tag" title="${esc(s.brand)} | ${esc(s.code)} | ${esc(s.sheen)}">${esc(s.area||'?')}: ${esc(s.color||s.brand||'—')}</span>`).join('')
-      : '<span style="color:var(--text-3);font-size:11px;">—</span>';
-    return `
-    <tr>
-      <td><strong>${esc(c.name)}</strong>${c.autoAdded?'<br><span style="font-size:9px;color:var(--text-3);">auto-added</span>':''}</td>
-      <td>${esc(c.phone||'—')}</td>
-      <td>${esc(c.email||'—')}</td>
-      <td>${esc(c.address||'—')}</td>
-      <td style="max-width:200px;">${specHTML}</td>
-      <td style="max-width:160px;">
-        ${(() => {
-          const allJobs = [
-            ...(DB.quotes||[]).filter(j=>j.client&&j.client.toLowerCase()===(c.name||'').toLowerCase()).map(j=>({type:'Quote',price:j.price,date:j.date,status:'pending',desc:j.areas||''})),
-            ...(DB.inprogress||[]).filter(j=>j.client&&j.client.toLowerCase()===(c.name||'').toLowerCase()).map(j=>({type:'WIP',price:j.price,date:j.start,status:'in-progress',desc:j.desc||''})),
-            ...(DB.completed||[]).filter(j=>j.client&&j.client.toLowerCase()===(c.name||'').toLowerCase()).map(j=>({type:'Done',price:j.price,date:j.date,status:'completed',desc:j.desc||''}))
-          ];
-          if (!allJobs.length) return '<span style="color:var(--text-3);font-size:11px;">No jobs</span>';
-          return allJobs.slice(0,3).map(j=>`<div style="font-size:11px;padding:2px 0;border-bottom:1px solid var(--border);"><span class="badge badge-${j.status}" style="padding:1px 6px;font-size:9px;">${j.type}</span> <span style="color:var(--text-2);">$${fmt(parseFloat(j.price)||0)}</span> <span style="color:var(--text-3);">${j.date||''}</span></div>`).join('') + (allJobs.length>3?`<div style="font-size:10px;color:var(--text-3);padding-top:2px;">+${allJobs.length-3} more</div>`:'');
-        })()}
-      </td>
-      <td style="font-size:12px;color:var(--text-3);max-width:160px;white-space:normal;">${esc(c.notes||'—')}</td>
-      <td>
-        <div class="td-actions">
-          <button class="btn btn-outline btn-sm" onclick="editEntry('client',${c.id})">✏️</button>
-          <button class="btn btn-sm" style="background:var(--accent-dim);color:var(--accent);border:1px solid rgba(56,189,248,0.2);" onclick="newJobFromClient(${c.id})">+ Job</button>
-          <button class="btn btn-danger btn-sm" onclick="deleteEntry('client',${c.id})">🗑</button>
+  container.innerHTML = DB.clients.map(c => {
+    const allJobs = [
+      ...(DB.quotes||[]).filter(j=>j.client&&j.client.toLowerCase()===(c.name||'').toLowerCase()).map(j=>({type:'Quote',price:j.price,date:j.date,status:'pending',desc:j.areas||''})),
+      ...(DB.inprogress||[]).filter(j=>j.client&&j.client.toLowerCase()===(c.name||'').toLowerCase()).map(j=>({type:'WIP',price:j.price,date:j.start,status:'in-progress',desc:j.desc||''})),
+      ...(DB.completed||[]).filter(j=>j.client&&j.client.toLowerCase()===(c.name||'').toLowerCase()).map(j=>({type:'Done',price:j.price,date:j.date,status:'completed',desc:j.desc||''}))
+    ];
+    const lastJob = allJobs[allJobs.length-1];
+    const totalValue = allJobs.reduce((s,j)=>s+(parseFloat(j.price)||0),0);
+    const specs = (c.paintSpecs||[]);
+    const specsHTML = specs.slice(0,3).map(s=>`<span class="client-spec-tag">${esc(s.area||'?')}: ${esc(s.color||s.brand||'—')}</span>`).join('');
+    return `<div class="data-card">
+      <div class="data-card-top">
+        <div>
+          <div class="data-card-name">${esc(c.name)}${c.autoAdded?'<span style="font-size:9px;color:var(--text-3);font-weight:400;margin-left:6px;">auto</span>':''}</div>
+          ${c.address?`<div class="data-card-sub">📍 ${esc(c.address)}</div>`:''}
         </div>
-      </td>
-    </tr>`;
+        <div style="text-align:right;">
+          <div style="font-size:14px;font-weight:700;color:var(--text-2);">${allJobs.length} job${allJobs.length!==1?'s':''}</div>
+          ${totalValue>0?`<div style="font-size:12px;color:var(--success);">$${fmt(totalValue)}</div>`:''}
+        </div>
+      </div>
+      <div class="data-card-meta">
+        ${c.phone?`<span>📞 ${esc(c.phone)}</span>`:''}
+        ${c.email?`<span>✉️ ${esc(c.email)}</span>`:''}
+        ${lastJob?`<span>Last: ${lastJob.type} ${lastJob.date||''}</span>`:''}
+      </div>
+      ${specsHTML?`<div style="margin-bottom:6px;">${specsHTML}</div>`:''}
+      ${c.notes?`<div style="font-size:11px;color:var(--text-3);padding:5px 8px;background:var(--surface-2);border-radius:8px;margin-bottom:6px;">${esc(c.notes)}</div>`:''}
+      <div class="data-card-actions">
+        <button class="btn btn-outline btn-sm" onclick="editEntry('client',${c.id})">✏️ Edit</button>
+        <button class="btn btn-accent btn-sm" onclick="newJobFromClient(${c.id})">+ Quote</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteEntry('client',${c.id})">🗑</button>
+      </div>
+    </div>`;
   }).join('');
 }
 
@@ -2755,14 +2805,14 @@ function newJobFromClient(id) {
   const c = DB.clients.find(x => x.id === id);
   if (!c) return;
   editMode = null;
-  clearIPForm();
-  ipSpecRows = (c.paintSpecs || []).map((s,i) => ({ ...s, _id: i+1 }));
-  ipSpecCounter = ipSpecRows.length;
-  setVal({ ip_client: c.name, ip_phone: c.phone, ip_email: c.email, ip_address: c.address });
-  renderIPSpecRows();
-  document.getElementById('ip_start').value = new Date().toISOString().slice(0,10);
-  showTab('inprogress');
-  openModal('modal-inprogress');
+  clearQuoteForm();
+  setVal({ q_client: c.name, q_phone: c.phone||'', q_email: c.email||'', q_address: c.address||'' });
+  const today2 = new Date();
+  document.getElementById('q_date').value = today2.toISOString().slice(0,10);
+  const exp = new Date(today2); exp.setDate(exp.getDate()+30);
+  document.getElementById('q_expires').value = exp.toISOString().slice(0,10);
+  showTab('quotes');
+  openModal('modal-quote');
 }
 
 // ── CALENDAR ──────────────────────────────────────────────
@@ -2996,6 +3046,110 @@ function calDeleteJob(jobType, jobId) {
 function prevMonth() { calMonth--; if (calMonth < 0) { calMonth = 11; calYear--; } renderCalendar(); }
 function nextMonth() { calMonth++; if (calMonth > 11) { calMonth = 0; calYear++; } renderCalendar(); }
 function goToday()   { calYear = new Date().getFullYear(); calMonth = new Date().getMonth(); renderCalendar(); }
+
+// ============================================================
+// METRICS
+// ============================================================
+function renderMetrics() {
+  const completed = DB.completed || [];
+  const expenses  = DB.expenses  || [];
+  const quotes    = DB.quotes    || [];
+  const inprog    = DB.inprogress|| [];
+
+  const totalRev  = completed.reduce((s,c) => s+(parseFloat(c.price)||0), 0);
+  const totalMat  = completed.reduce((s,c) => s+(parseFloat(c.materials)||0), 0);
+  const totalExp  = expenses.reduce((s,e)  => s+(parseFloat(e.amount)||0), 0);
+  const netProfit = totalRev - totalMat;
+  const unpaid    = completed.filter(c => c.payment !== 'paid').length;
+  const thisYear  = new Date().getFullYear();
+  const ytdJobs   = completed.filter(c => (c.date||'').startsWith(thisYear)).length;
+  const ytdRev    = completed.filter(c => (c.date||'').startsWith(thisYear)).reduce((s,c)=>s+(parseFloat(c.price)||0),0);
+
+  document.getElementById('metricsStats').innerHTML = `
+    <div class="stat-card"><div class="stat-label">Total Revenue</div><div class="stat-value">$${fmt(totalRev)}</div><div class="stat-sub">All completed jobs</div></div>
+    <div class="stat-card"><div class="stat-label">Net Profit</div><div class="stat-value" style="color:var(--success)">$${fmt(netProfit)}</div><div class="stat-sub">After materials</div></div>
+    <div class="stat-card"><div class="stat-label">${thisYear} Revenue</div><div class="stat-value">$${fmt(ytdRev)}</div><div class="stat-sub">${ytdJobs} jobs this year</div></div>
+    <div class="stat-card"><div class="stat-label">Total Expenses</div><div class="stat-value" style="color:var(--warning)">$${fmt(totalExp)}</div><div class="stat-sub">YTD deductions</div></div>
+  `;
+
+  // Monthly revenue (last 6 months)
+  const months = [];
+  for (let i = 5; i >= 0; i--) {
+    const d = new Date(); d.setMonth(d.getMonth() - i);
+    const key = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+    const label = d.toLocaleString('default',{month:'short',year:'2-digit'});
+    const rev = completed.filter(c=>(c.date||'').startsWith(key)).reduce((s,c)=>s+(parseFloat(c.price)||0),0);
+    const exp = expenses.filter(e=>(e.date||'').startsWith(key)).reduce((s,e)=>s+(parseFloat(e.amount)||0),0);
+    months.push({label,rev,exp});
+  }
+  const maxVal = Math.max(...months.map(m=>Math.max(m.rev,m.exp)), 1);
+  const barHTML = months.map(m => `
+    <div style="display:flex;flex-direction:column;align-items:center;flex:1;gap:4px;">
+      <div style="font-size:10px;color:var(--text-3);font-weight:600;">$${m.rev>999?(m.rev/1000).toFixed(1)+'k':Math.round(m.rev)}</div>
+      <div style="width:100%;display:flex;gap:2px;align-items:flex-end;height:60px;">
+        <div style="flex:1;background:var(--primary);border-radius:4px 4px 0 0;height:${Math.max(4,Math.round(m.rev/maxVal*60))}px;"></div>
+        <div style="flex:1;background:var(--danger);opacity:0.7;border-radius:4px 4px 0 0;height:${Math.max(m.exp>0?4:0,Math.round(m.exp/maxVal*60))}px;"></div>
+      </div>
+      <div style="font-size:10px;color:var(--text-3);">${m.label}</div>
+    </div>`).join('');
+
+  // Expense by category
+  const bycat = {};
+  expenses.forEach(e => { bycat[e.cat]=(bycat[e.cat]||0)+(parseFloat(e.amount)||0); });
+  const catRows = Object.entries(bycat).sort((a,b)=>b[1]-a[1]).slice(0,6).map(([cat,amt])=>`
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;">
+      <span style="color:var(--text-2);">${esc(cat)}</span>
+      <span style="font-weight:700;color:var(--warning);">$${fmt(amt)}</span>
+    </div>`).join('');
+
+  // Completed jobs list (condensed)
+  const recentJobs = [...completed].sort((a,b)=>(b.date||'').localeCompare(a.date||'')).slice(0,10).map(c => {
+    const price = parseFloat(c.price)||0;
+    const mat   = parseFloat(c.materials)||0;
+    return `<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);">
+      <div style="flex:1;min-width:0;">
+        <div style="font-weight:600;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(c.client)}</div>
+        <div style="font-size:11px;color:var(--text-3);">${c.date||''} · ${esc(c.desc||'')}</div>
+      </div>
+      <div style="text-align:right;flex-shrink:0;">
+        <div style="font-weight:700;color:var(--primary);">$${fmt(price)}</div>
+        <div style="font-size:10px;color:var(--success);">+$${fmt(price-mat)}</div>
+      </div>
+      <span class="badge badge-${c.payment}">${cap(c.payment)}</span>
+    </div>`;
+  }).join('');
+
+  // Unpaid/outstanding
+  const outstanding = completed.filter(c=>c.payment!=='paid').map(c=>`
+    <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);">
+      <div style="flex:1;min-width:0;">
+        <div style="font-weight:600;font-size:13px;">${esc(c.client)}</div>
+        <div style="font-size:11px;color:var(--text-3);">${esc(c.invnum||'')} · ${c.date||''}</div>
+      </div>
+      <div style="font-weight:700;color:var(--danger);">$${fmt(parseFloat(c.price)||0)}</div>
+      <span class="badge badge-${c.payment}">${cap(c.payment)}</span>
+      <button class="btn btn-sm" style="background:var(--primary-dim);color:var(--primary);border:1px solid rgba(123,143,255,0.2);" onclick="openInvoice(${c.id})">🧾</button>
+    </div>`).join('');
+
+  document.getElementById('metricsBody').innerHTML = `
+    <div class="card">
+      <div class="card-header"><h3>📈 Revenue vs Expenses (last 6 months)</h3>
+        <div style="display:flex;gap:12px;font-size:11px;"><span style="color:var(--primary);">■ Revenue</span><span style="color:var(--danger);opacity:0.7;">■ Expenses</span></div>
+      </div>
+      <div class="card-body"><div style="display:flex;gap:6px;align-items:flex-end;">${barHTML}</div></div>
+    </div>
+    ${outstanding ? `<div class="card"><div class="card-header"><h3>⚠️ Outstanding Payments (${unpaid})</h3></div><div class="card-body" style="padding:0 18px;">${outstanding}</div></div>` : ''}
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;">
+      <div class="card">
+        <div class="card-header"><h3>💸 Expenses by Category</h3></div>
+        <div class="card-body" style="padding:0 18px;">${catRows || '<div style="color:var(--text-3);font-size:13px;padding:12px 0;">No expenses logged.</div>'}</div>
+      </div>
+      <div class="card">
+        <div class="card-header"><h3>📋 Completed Jobs</h3></div>
+        <div class="card-body" style="padding:0 18px;">${recentJobs || '<div style="color:var(--text-3);font-size:13px;padding:12px 0;">No completed jobs yet.</div>'}</div>
+      </div>
+    </div>`;
+}
 
 // ============================================================
 // INIT
