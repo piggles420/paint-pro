@@ -441,17 +441,17 @@
             <h4>Per Sq Ft Rates (Labor + Materials)</h4>
             <div class="price-tier-row">
               <label>🟢 Basic (simple prep, 1-2 colors)</label>
-              <span>$</span><input type="number" id="tierBasic" value="1.50" step="0.25" min="0" oninput="recalc()" onchange="recalc()">
+              <span>$</span><input type="number" id="tierBasic" value="1.25" step="0.05" min="0" oninput="recalc()" onchange="recalc()">
               <span style="font-size:12px;color:var(--text-3)">/sq ft</span>
             </div>
             <div class="price-tier-row">
               <label>🔵 Standard (light prep, 2+ colors)</label>
-              <span>$</span><input type="number" id="tierStandard" value="2.50" step="0.25" min="0" oninput="recalc()" onchange="recalc()">
+              <span>$</span><input type="number" id="tierStandard" value="1.85" step="0.05" min="0" oninput="recalc()" onchange="recalc()">
               <span style="font-size:12px;color:var(--text-3)">/sq ft</span>
             </div>
             <div class="price-tier-row">
               <label>🟣 Premium (heavy prep, texture, etc.)</label>
-              <span>$</span><input type="number" id="tierPremium" value="3.50" step="0.25" min="0" oninput="recalc()" onchange="recalc()">
+              <span>$</span><input type="number" id="tierPremium" value="2.65" step="0.05" min="0" oninput="recalc()" onchange="recalc()">
               <span style="font-size:12px;color:var(--text-3)">/sq ft</span>
             </div>
             <div class="price-tier-row" style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);">
@@ -466,12 +466,12 @@
             <h4 style="font-size:11px;font-weight:800;color:var(--text-3);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:10px;">🚪 Doors & 🪟 Windows Add-ons</h4>
             <div class="price-tier-row">
               <label>Per Door (paint both sides + trim)</label>
-              <span>$</span><input type="number" id="doorPrice" value="125" step="5" min="0" oninput="recalc()" onchange="recalc()">
+              <span>$</span><input type="number" id="doorPrice" value="95" step="5" min="0" oninput="recalc()" onchange="recalc()">
               <span style="font-size:12px;color:var(--text-3);">/door</span>
             </div>
             <div class="price-tier-row">
               <label>Per Window (cut-in, sills & casing)</label>
-              <span>$</span><input type="number" id="windowPrice" value="75" step="5" min="0" oninput="recalc()" onchange="recalc()">
+              <span>$</span><input type="number" id="windowPrice" value="55" step="5" min="0" oninput="recalc()" onchange="recalc()">
               <span style="font-size:12px;color:var(--text-3);">/window</span>
             </div>
           </div>
@@ -484,24 +484,24 @@
               <div class="room-price-row" style="font-weight:700;font-size:11px;color:var(--text-3);">
                 <span>ROOM TYPE</span><span style="text-align:right">LOW $</span><span style="text-align:right">HIGH $</span>
               </div>
-              <div class="room-price-row"><span>Small Bedroom</span><input type="number" id="rp_sbed_lo" value="200" oninput="recalc()" onchange="recalc()"><input type="number" id="rp_sbed_hi" value="400" onchange="recalc()"></div>
-              <div class="room-price-row"><span>Large Bedroom</span><input type="number" id="rp_lbed_lo" value="300" oninput="recalc()" onchange="recalc()"><input type="number" id="rp_lbed_hi" value="600" onchange="recalc()"></div>
-              <div class="room-price-row"><span>Bathroom</span><input type="number" id="rp_bath_lo" value="150" oninput="recalc()" onchange="recalc()"><input type="number" id="rp_bath_hi" value="300" onchange="recalc()"></div>
-              <div class="room-price-row"><span>Kitchen</span><input type="number" id="rp_kit_lo" value="300" oninput="recalc()" onchange="recalc()"><input type="number" id="rp_kit_hi" value="600" onchange="recalc()"></div>
-              <div class="room-price-row"><span>Living / Dining Room</span><input type="number" id="rp_liv_lo" value="400" oninput="recalc()" onchange="recalc()"><input type="number" id="rp_liv_hi" value="800" onchange="recalc()"></div>
-              <div class="room-price-row"><span>Hallway / Stairwell</span><input type="number" id="rp_hall_lo" value="100" oninput="recalc()" onchange="recalc()"><input type="number" id="rp_hall_hi" value="300" onchange="recalc()"></div>
-              <div class="room-price-row"><span>Office / Study</span><input type="number" id="rp_off_lo" value="200" oninput="recalc()" onchange="recalc()"><input type="number" id="rp_off_hi" value="450" onchange="recalc()"></div>
-              <div class="room-price-row"><span>Garage / Utility</span><input type="number" id="rp_gar_lo" value="300" oninput="recalc()" onchange="recalc()"><input type="number" id="rp_gar_hi" value="700" onchange="recalc()"></div>
-              <div class="room-price-row"><span>Exterior Wall</span><input type="number" id="rp_ext_lo" value="500" oninput="recalc()" onchange="recalc()"><input type="number" id="rp_ext_hi" value="1200" onchange="recalc()"></div>
+              <div class="room-price-row"><span>Small Bedroom</span><input type="number" id="rp_sbed_lo" value="150" oninput="recalc()" onchange="recalc()"><input type="number" id="rp_sbed_hi" value="295" onchange="recalc()"></div>
+              <div class="room-price-row"><span>Large Bedroom</span><input type="number" id="rp_lbed_lo" value="225" oninput="recalc()" onchange="recalc()"><input type="number" id="rp_lbed_hi" value="450" onchange="recalc()"></div>
+              <div class="room-price-row"><span>Bathroom</span><input type="number" id="rp_bath_lo" value="110" oninput="recalc()" onchange="recalc()"><input type="number" id="rp_bath_hi" value="225" onchange="recalc()"></div>
+              <div class="room-price-row"><span>Kitchen</span><input type="number" id="rp_kit_lo" value="225" oninput="recalc()" onchange="recalc()"><input type="number" id="rp_kit_hi" value="450" onchange="recalc()"></div>
+              <div class="room-price-row"><span>Living / Dining Room</span><input type="number" id="rp_liv_lo" value="295" oninput="recalc()" onchange="recalc()"><input type="number" id="rp_liv_hi" value="595" onchange="recalc()"></div>
+              <div class="room-price-row"><span>Hallway / Stairwell</span><input type="number" id="rp_hall_lo" value="75" oninput="recalc()" onchange="recalc()"><input type="number" id="rp_hall_hi" value="225" onchange="recalc()"></div>
+              <div class="room-price-row"><span>Office / Study</span><input type="number" id="rp_off_lo" value="165" oninput="recalc()" onchange="recalc()"><input type="number" id="rp_off_hi" value="350" onchange="recalc()"></div>
+              <div class="room-price-row"><span>Garage / Utility</span><input type="number" id="rp_gar_lo" value="235" oninput="recalc()" onchange="recalc()"><input type="number" id="rp_gar_hi" value="495" onchange="recalc()"></div>
+              <div class="room-price-row"><span>Exterior Wall</span><input type="number" id="rp_ext_lo" value="375" oninput="recalc()" onchange="recalc()"><input type="number" id="rp_ext_hi" value="875" onchange="recalc()"></div>
             </div>
             <div style="height:1px;background:var(--border);margin:14px 0;"></div>
             <div class="price-tier-row">
               <label>Per Door add-on</label>
-              <span>$</span><input type="number" id="doorPriceRoom" value="125" step="5" min="0" oninput="recalc()" onchange="recalc()">
+              <span>$</span><input type="number" id="doorPriceRoom" value="95" step="5" min="0" oninput="recalc()" onchange="recalc()">
             </div>
             <div class="price-tier-row">
               <label>Per Window add-on</label>
-              <span>$</span><input type="number" id="windowPriceRoom" value="75" step="5" min="0" oninput="recalc()" onchange="recalc()">
+              <span>$</span><input type="number" id="windowPriceRoom" value="55" step="5" min="0" oninput="recalc()" onchange="recalc()">
             </div>
           </div>
         </div>
@@ -667,7 +667,17 @@
   <div class="stats-row" id="quoteStats"></div>
   <div class="section-actions">
     <button class="btn btn-primary" onclick="openAddModal('quote')">+ New Quote</button>
-    <span class="text-sm">Track all active quotes and their status</span>
+    <span class="text-sm">Track all active quotes</span>
+  </div>
+  <!-- Search & Filter Bar -->
+  <div style="display:flex;gap:8px;margin-bottom:12px;align-items:center;flex-wrap:wrap;">
+    <input type="text" id="quotesSearch" placeholder="🔍 Search client, address, notes…" oninput="renderQuotes()" style="flex:1;min-width:160px;padding:9px 12px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:14px;">
+    <select id="quotesFilter" onchange="renderQuotes()" style="padding:9px 10px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:13px;">
+      <option value="all">All</option>
+      <option value="pending">Pending</option>
+      <option value="accepted">Accepted</option>
+      <option value="declined">Declined</option>
+    </select>
   </div>
   <div id="quotesList"></div>
 </div>
@@ -834,7 +844,7 @@
           <textarea id="s_invoicenote" rows="2" placeholder="Thank you for your business!"></textarea>
         </div>
       </div>
-      <div style="display:flex;gap:10px;">
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
         <button class="btn btn-primary" onclick="saveSettings()">💾 Save Settings</button>
         <button class="btn btn-outline" onclick="exportData()">📤 Export All Data (JSON)</button>
         <button class="btn btn-outline" onclick="importDataClick()">📥 Import Data</button>
@@ -843,6 +853,18 @@
       <div style="margin-top:12px;font-size:12px;color:var(--text-3);background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.25);border-radius:8px;padding:10px 12px;line-height:1.6;">
         💡 <strong style="color:var(--text-2);">About your data:</strong> All info is stored in Chrome's local storage on this device. It survives app restarts and phone reboots — but it will be erased if you clear Chrome's browsing data.<br>
         <strong style="color:var(--text-2);">Use Export regularly</strong> to save a backup file to your phone's Downloads folder. That file is yours forever — you can restore it any time, back it up to Google Drive, or email it to yourself.
+      </div>
+
+      <!-- DANGER ZONE -->
+      <div style="margin-top:24px;border:1px solid rgba(239,68,68,0.35);border-radius:10px;padding:14px 16px;background:rgba(239,68,68,0.05);">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+          <span style="font-size:16px;">🚨</span>
+          <strong style="color:#ef4444;font-size:14px;">Danger Zone</strong>
+        </div>
+        <p style="font-size:12px;color:var(--text-2);margin:0 0 12px 0;line-height:1.6;">
+          <strong>Factory Reset</strong> permanently wipes all quotes, jobs, expenses, clients, and settings from this device. This cannot be undone. Export a backup first if you want to keep your data.
+        </p>
+        <button class="btn" style="background:rgba(239,68,68,0.12);color:#ef4444;border:1px solid rgba(239,68,68,0.4);font-size:13px;" onclick="factoryReset()">🗑️ Factory Reset — Erase All Data</button>
       </div>
     </div>
   </div>
@@ -1537,11 +1559,11 @@ function clearCalculator() {
 // QUOTES
 // ============================================================
 function renderQuotes() {
-  const data = DB.quotes || [];
-  const total = data.length;
-  const accepted = data.filter(q=>q.status==='accepted').length;
-  const pending  = data.filter(q=>q.status==='pending').length;
-  const totalValue = data.filter(q=>q.status!=='declined').reduce((s,q)=>s+(parseFloat(q.price)||0),0);
+  const allData = DB.quotes || [];
+  const total = allData.length;
+  const accepted = allData.filter(q=>q.status==='accepted').length;
+  const pending  = allData.filter(q=>q.status==='pending').length;
+  const totalValue = allData.filter(q=>q.status!=='declined').reduce((s,q)=>s+(parseFloat(q.price)||0),0);
   document.getElementById('quoteStats').innerHTML = `
     <div class="stat-card"><div class="stat-label">Total Quotes</div><div class="stat-value">${total}</div></div>
     <div class="stat-card"><div class="stat-label">Pending</div><div class="stat-value">${pending}</div><div class="stat-sub">Awaiting response</div></div>
@@ -1550,8 +1572,28 @@ function renderQuotes() {
   `;
   const container = document.getElementById('quotesList');
   if (!container) return;
-  if (data.length === 0) {
+
+  // Apply search + filter
+  const searchVal = (document.getElementById('quotesSearch')?.value || '').toLowerCase().trim();
+  const filterVal = document.getElementById('quotesFilter')?.value || 'all';
+  let data = allData;
+  if (filterVal !== 'all') data = data.filter(q => q.status === filterVal);
+  if (searchVal) {
+    data = data.filter(q =>
+      (q.client||'').toLowerCase().includes(searchVal) ||
+      (q.address||'').toLowerCase().includes(searchVal) ||
+      (q.notes||'').toLowerCase().includes(searchVal) ||
+      (q.areas||'').toLowerCase().includes(searchVal) ||
+      (q.phone||'').toLowerCase().includes(searchVal)
+    );
+  }
+
+  if (allData.length === 0) {
     container.innerHTML = '<div class="empty-state"><div class="icon">📋</div><div>No quotes yet. Use the Calculator to generate one.</div></div>';
+    return;
+  }
+  if (data.length === 0) {
+    container.innerHTML = '<div class="empty-state"><div class="icon">🔍</div><div>No quotes match your search.</div></div>';
     return;
   }
   const today = new Date().toISOString().slice(0,10);
@@ -1567,7 +1609,7 @@ function renderQuotes() {
         </div>
         <div style="text-align:right;">
           <div class="data-card-price">$${fmt(parseFloat(q.price)||0)}</div>
-          <span class="badge badge-${q.status}">${cap(q.status)}</span>
+          <span class="badge badge-${q.status}" onclick="cycleQuoteStatus(${q.id})" style="cursor:pointer;" title="Click to change status">${cap(q.status)}</span>
         </div>
       </div>
       <div class="data-card-meta">
@@ -1582,10 +1624,34 @@ function renderQuotes() {
         <button class="btn btn-sm" style="background:var(--purple-dim);color:var(--purple);border:1px solid rgba(167,139,250,0.2);" onclick="openEstimate(${q.id})">📄 Bid</button>
         <button class="btn btn-accent btn-sm" onclick="moveToInProgress(${q.id})">→ Schedule</button>
         <button class="btn btn-outline btn-sm" onclick="editEntry('quote',${q.id})">✏️ Edit</button>
+        <button class="btn btn-outline btn-sm" onclick="dupeQuote(${q.id})" title="Duplicate quote">⧉ Dupe</button>
         <button class="btn btn-danger btn-sm" onclick="deleteEntry('quote',${q.id})">🗑</button>
       </div>
     </div>`;
   }).join('');
+}
+
+function cycleQuoteStatus(id) {
+  const q = DB.quotes.find(x => x.id === id);
+  if (!q) return;
+  const cycle = { pending: 'accepted', accepted: 'declined', declined: 'pending' };
+  q.status = cycle[q.status] || 'pending';
+  saveDB();
+  renderQuotes();
+}
+
+function dupeQuote(id) {
+  const q = DB.quotes.find(x => x.id === id);
+  if (!q) return;
+  const copy = JSON.parse(JSON.stringify(q));
+  copy.id = Date.now();
+  copy.status = 'pending';
+  copy.client = copy.client + ' (Copy)';
+  copy.date = new Date().toISOString().slice(0,10);
+  DB.quotes.push(copy);
+  saveDB();
+  renderQuotes();
+  showToast('Quote duplicated');
 }
 
 function moveToInProgress(id) {
@@ -2509,6 +2575,15 @@ function checkBackupReminder() {
 
 function importDataClick() { document.getElementById('importFile').click(); }
 
+function factoryReset() {
+  if (!confirm('⚠️ FACTORY RESET\n\nThis will permanently erase ALL quotes, jobs, expenses, clients, and settings.\n\nThis cannot be undone. Are you sure?')) return;
+  if (!confirm('Last chance — are you 100% sure you want to erase everything?')) return;
+  localStorage.removeItem('paintpro_db');
+  localStorage.removeItem('paintpro_last_backup');
+  localStorage.removeItem('paintpro_banner_dismissed');
+  window.location.reload();
+}
+
 function importData(event) {
   const file = event.target.files[0];
   if (!file) return;
@@ -2535,6 +2610,19 @@ function addDays(dateStr, n) { const [y,m,d] = dateStr.split('-').map(Number); c
 function fmt(n) { return parseFloat(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
 function esc(s) { return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function cap(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : ''; }
+function showToast(msg, duration=2200) {
+  let t = document.getElementById('pp-toast');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = 'pp-toast';
+    t.style.cssText = 'position:fixed;bottom:calc(70px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);background:var(--primary);color:#fff;padding:10px 20px;border-radius:20px;font-size:14px;font-weight:600;z-index:9999;pointer-events:none;opacity:0;transition:opacity 0.2s;white-space:nowrap;box-shadow:0 4px 14px rgba(0,0,0,0.25);';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.opacity = '1';
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => { t.style.opacity = '0'; }, duration);
+}
 function setText(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
 function gv(id) { const el = document.getElementById(id); return el ? el.value : ''; }
 function setVal(map) { Object.entries(map).forEach(([k,v]) => { const el = document.getElementById(k); if (el) el.value = v || ''; }); }
